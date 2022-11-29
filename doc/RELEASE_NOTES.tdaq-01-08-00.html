@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>RELEASE_NOTES</title>
+</head>
+<body>
+<h4>Fixes</h4>
+<ul>
+  <li>Fixed wrong permissions when creating files and FIFOs;</li>
+  <li>Process::join(): errno is set to zero before calling <span
+ style="font-style: italic;">waitpid</span>;</li>
+  <li>Executable::pipe_out(): opening in/out/err file descriptors
+before forking and fixed uncought exceptions;</li>
+  <li>Added more verbosity to the <span style="font-style: italic;">SystemCallIssue</span>
+exception.<br>
+  </li>
+</ul>
+<br>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>RELEASE_NOTES</title>
+</head>
+<body>
+<h4>General changes</h4>
+<ul>
+  <li>Changes in the <span style="font-style: italic;">FIFOConnction</span>
+class:</li>
+  <ul>
+    <li>Added methods to open FIFOs in read, write or read/write mode.</li>
+    <li>Added an option to perform the <span
+ style="font-style: italic;">open</span> system call in non-blocking
+mode.</li>
+    <li>Added methods to only perform read or write actions.<br>
+    </li>
+    <li>Increased MAX_MESSAGE_LEN to 512.</li>
+  </ul>
+  <li>Changes in the <span style="font-style: italic;">File</span>
+class:</li>
+  <ul>
+    <li>File permissions are changed only if the requested mode is
+different than the present one.</li>
+    <li>Changes in <span style="font-style: italic;">make_dir</span>
+logic:</li>
+    <ul>
+      <li>First try to create the directory;</li>
+      <li>If this action does not fail then try to assign the right
+permissions to the directory;</li>
+      <li>If the <span style="font-style: italic;">mkdir</span> call
+fails then check if this is due to the directory already existing: in
+this case try to change directory permissions;</li>
+      <li>If the <span style="font-style: italic;">mkdir</span> call
+fails for other reasons then throw a <span style="font-style: italic;">SystemCallIssue</span>
+exception.<span style="font-weight: bold;"></span></li>
+    </ul>
+  </ul>
+  <ul>
+    <li><span style="font-weight: bold;"><span
+ style="font-weight: bold;"></span></span>Permissions on directories
+are changed systematically with <span style="font-style: italic;">chmod.</span></li>
+  </ul>
+  <li><span style="font-style: italic;"><span
+ style="font-style: italic;"><span style="font-style: italic;"></span></span></span><span
+ style="font-weight: bold;"><span style="font-style: italic;"></span></span><span
+ style="font-style: italic;"></span><span style="font-style: italic;"><span
+ style="font-style: italic;"><span style="font-style: italic;"></span></span></span>C<span
+ style="font-style: italic;"><span style="font-style: italic;"><span
+ style="font-style: italic;"></span></span></span>hanges in the <span
+ style="font-style: italic;">MapFile</span> class:</li>
+  <ul>
+    <li>Added a simple method (<span style="font-style: italic;">is_mapped</span>)
+to check if the file is mapped in memory or not.</li>
+  </ul>
+  <li>Changes in the <span style="font-style: italic;">Executable</span>
+class:</li>
+  <ul>
+    <li>Fixed problem with child not exiting in case of a failure in
+the <span style="font-style: italic;">exec</span> call.</li>
+    <li>SIGTERM and SIGINT are set to SIG_DFL in the child process
+after <span style="font-style: italic;">fork.</span></li>
+  </ul>
+  <li><span style="font-style: italic;"></span>Changes in the <span
+ style="font-style: italic;">Process</span> class:</li>
+  <ul>
+    <li>The <span style="font-style: italic;">terminate</span> methd
+issues only a SIGTERM now (no SIGQUIT nor SIGKILL); the previous code
+did not allow for long exit handlers to be executed.<br>
+    </li>
+  </ul>
+</ul>
+<span style="color: rgb(255, 0, 0);"></span>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>RELEASE_NOTES</title>
+</head>
+<body>
+<h4>Changes since tdaq-01-08-00</h4>
+If changes come from a patch in the previous release then the
+patch number is specified between brackets.
+<ul>
+  <li><span style="font-style: italic;">(TDAQ-01-08-00_06)</span> The
+child process environment is set after calling 'fork';</li>
+  <li><span style="font-style: italic;">(TDAQ-01-08-01_09)</span>
+Closing file descriptors not used in child processes at the 'exec'
+stage;</li>
+  <li><span style="font-style: italic;">(Introduced in tdaq-01-08-01)</span>
+StringMemoryArea: Improved performance of methods returning vectors and
+maps;<br>
+  </li>
+  <li>Descriptor: added method to flag the file desciptors to be closed
+on exec;</li>
+  <li>Executable: closing duplicated file descriptors before exec;</li>
+  <li>MapFile: added method to get the file descriptors;</li>
+  <li>Host: making distructors virtual;</li>
+  <li>User: Replaced 'getpw' functions family with their thread safe
+version.<br>
+  </li>
+</ul>
+<br>
+</body>
+</html>
