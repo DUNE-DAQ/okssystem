@@ -12,10 +12,10 @@
 #include <iostream>
 #include <sstream>
 
-#include <ers/ers.h>
+#include "ers/ers.hpp"
 
-#include "system/User.h"
-#include "system/exceptions.h"
+#include "system/User.hpp"
+#include "system/exceptions.hpp"
 
 const System::User System::User::ROOT(0);
 

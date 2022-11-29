@@ -9,8 +9,8 @@
 
 #include <stdlib.h>
 
-#include "system/Environment.h"
-#include "system/exceptions.h"
+#include "system/Environment.hpp"
+#include "system/exceptions.hpp"
 
 using namespace System;
 

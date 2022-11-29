@@ -12,11 +12,11 @@
 #include <fcntl.h>
 #include <unistd.h>
  
-#include "system/File.h"
-#include "system/Descriptor.h"
-#include "system/exceptions.h"
+#include "system/File.hpp"
+#include "system/Descriptor.hpp"
+#include "system/exceptions.hpp"
 
-#include "ers/ers.h"
+#include "ers/ers.hpp"
 
 int System::Descriptor::flags(bool read_mode, bool write_mode) {
     if (read_mode && write_mode) { 

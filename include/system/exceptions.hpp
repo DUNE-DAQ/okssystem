@@ -10,7 +10,7 @@
  *
  */
  
-#include <ers/Issue.h>
+#include "ers/Issue.hpp"
 #include <errno.h>
 
 #include <string>

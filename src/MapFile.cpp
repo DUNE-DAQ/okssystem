@@ -13,11 +13,11 @@
 #include <unistd.h>
 
 
-#include "system/Descriptor.h"
-#include "system/MapFile.h"
-#include "system/exceptions.h"
+#include "system/Descriptor.hpp"
+#include "system/MapFile.hpp"
+#include "system/exceptions.hpp"
 
-#include "ers/Assertion.h"
+#include "ers/Assertion.hpp"
 
 /** Builds a memory mapped file. 
   * \param name the path of the file to map. 

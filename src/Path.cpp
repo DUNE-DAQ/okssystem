@@ -9,8 +9,8 @@
 #include <sstream>
 #include <iostream>
 
-#include "system/Path.h"
-#include "system/exceptions.h"
+#include "system/Path.hpp"
+#include "system/exceptions.hpp"
 
 const char System::Path::PATH_SEPARATOR = ':';
 

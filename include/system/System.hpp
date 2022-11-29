@@ -14,15 +14,15 @@
   * \version 1.0
   */
 
-#include "system/File.h"
-#include "system/Executable.h"
-#include "system/Process.h"
-#include "system/MapFile.h"
-#include "system/Environment.h"
-#include "system/User.h"
-#include "system/Host.h"
-#include "system/Path.h"
-#include "system/Descriptor.h"
+#include "system/File.hpp"
+#include "system/Executable.hpp"
+#include "system/Process.hpp"
+#include "system/MapFile.hpp"
+#include "system/Environment.hpp"
+#include "system/User.hpp"
+#include "system/Host.hpp"
+#include "system/Path.hpp"
+#include "system/Descriptor.hpp"
 
 /** \page Sys_package The System package
   The System package contains C++ wrappers for POSIX functions and general utility classes. 

@@ -10,8 +10,8 @@
 #ifndef SYSTEM_FIFO_CONNECTION
 #define SYSTEM_FIFO_CONNECTION
 
-#include "system/File.h"
-#include "system/Descriptor.h"
+#include "system/File.hpp"
+#include "system/Descriptor.hpp"
 
 namespace System {
     

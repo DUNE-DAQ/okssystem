@@ -8,9 +8,9 @@
  */
 
 #include <sstream>
-#include "ers/ers.h"
+#include "ers/ers.hpp"
 
-#include "system/StringMemoryArea.h"
+#include "system/StringMemoryArea.hpp"
 
 const char System::StringMemoryArea::STRING_SEPARATOR = (char) 3;
 const char System::StringMemoryArea::MAP_ENTRY_SEPARATOR = (char) 4; 

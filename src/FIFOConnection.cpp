@@ -9,10 +9,10 @@
 
 #include <fcntl.h>
 
-#include "ers/ers.h"
+#include "ers/ers.hpp"
 
-#include "system/FIFOConnection.h"
-#include "system/exceptions.h"
+#include "system/FIFOConnection.hpp"
+#include "system/exceptions.hpp"
 
 const unsigned int System::FIFOConnection::MAX_MESSAGE_LEN = 512;
 

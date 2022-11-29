@@ -19,14 +19,14 @@
 #include <sstream>
 #include <iostream>
 
-#include "ers/Assertion.h"
-#include "ers/ers.h"
+#include "ers/Assertion.hpp"
+#include "ers/ers.hpp"
 
-#include "system/Environment.h"
-#include "system/Executable.h"
-#include "system/Process.h"
-#include "system/Descriptor.h"
-#include "system/exceptions.h"
+#include "system/Environment.hpp"
+#include "system/Executable.hpp"
+#include "system/Process.hpp"
+#include "system/Descriptor.hpp"
+#include "system/exceptions.hpp"
 
 const char* const System::Executable::SHELL_COMMAND = "/bin/sh";
 const char* const System::Executable::SHELL_COMMAND_PARAM = "-c";

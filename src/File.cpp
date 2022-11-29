@@ -23,12 +23,12 @@
 #include <fstream>
 #include <pwd.h>
 
-#include "ers/ers.h"
+#include "ers/ers.hpp"
 
-#include "system/File.h"
-#include "system/exceptions.h"
-#include "system/Executable.h"
-#include "system/User.h"
+#include "system/File.hpp"
+#include "system/exceptions.hpp"
+#include "system/Executable.hpp"
+#include "system/User.hpp"
 
 #define SPACE_CHAR ' ' 
 

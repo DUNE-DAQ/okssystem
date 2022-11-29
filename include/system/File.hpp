@@ -16,7 +16,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "system/User.h"
+#include "system/User.hpp"
 
 namespace System {
     

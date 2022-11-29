@@ -1,5 +1,15 @@
+cmake_minimum_required(VERSION 3.12)
+project(system VERSION 0.0.0)
 
-tdaq_package()
+find_package(daq-cmake REQUIRED)
 
-tdaq_add_library(osw src/*.cxx  LINK_LIBRARIES tdaq-common::ers)
-tdaq_add_executable(system_test NOINSTALL test/SystemTest.cxx LINK_LIBRARIES osw)
+daq_setup_environment()
+
+find_package(ers REQUIRED)
+find_package(logging REQUIRED)
+
+daq_add_library( *.cpp LINK_LIBRARIES ers::ers )
+
+daq_add_application(system_test SystemTest.cxx TEST LINK_LIBRARIES system logging::logging)
+
+daq_install()

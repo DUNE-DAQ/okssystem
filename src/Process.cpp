@@ -15,10 +15,10 @@
 #include <iostream>
 #include <sstream>
 
-#include <ers/ers.h>
+#include "ers/ers.hpp"
 
-#include "system/exceptions.h"
-#include "system/Process.h"
+#include "system/exceptions.hpp"
+#include "system/Process.hpp"
 
 
 const int System::Process::TEST_BASE_VALUE = 182;/**< Lowest value for test manager result code  */
