@@ -1,6 +1,6 @@
 /*
  *  User.cxx
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 03.02.05.
  *  Copyright 2005 CERN. All rights reserved.
@@ -14,20 +14,20 @@
 
 #include "ers/ers.hpp"
 
-#include "system/User.hpp"
-#include "system/exceptions.hpp"
+#include "okssystem/User.hpp"
+#include "okssystem/exceptions.hpp"
 
-const System::User System::User::ROOT(0);
+const OksSystem::User OksSystem::User::ROOT(0);
 
-System::User::User() throw() {
+OksSystem::User::User() throw() {
     m_user_id = ::getuid();
 } // User
 
-System::User::User(uid_t user_id) throw() {
+OksSystem::User::User(uid_t user_id) throw() {
     m_user_id = user_id;
 } // User
 
-System::User::User(const std::string &s_name) {
+OksSystem::User::User(const std::string &s_name) {
   
   errno = 0;
   long bufSize = ::sysconf(_SC_GETPW_R_SIZE_MAX);
@@ -37,7 +37,7 @@ System::User::User(const std::string &s_name) {
       bufSize = 1024;
     } else {  
       std::string message = "with argument _SC_GETPW_R_SIZE_MAX while getting info about user " + s_name;
-      throw System::SystemCallIssue(ERS_HERE, errno, "sysconf", message.c_str());
+      throw OksSystem::OksSystemCallIssue(ERS_HERE, errno, "sysconf", message.c_str());
     }
   }
 
@@ -52,19 +52,19 @@ System::User::User(const std::string &s_name) {
     } else {
       delete[] buf;
       std::string eMsg = "User " + s_name + " not found";
-      throw System::SystemCallIssue(ERS_HERE, errno, "getpwnam_r", eMsg.c_str());
+      throw OksSystem::OksSystemCallIssue(ERS_HERE, errno, "getpwnam_r", eMsg.c_str());
     }
   } else {
     delete[] buf;
     std::string message = "while getting info about user " + s_name;
-    throw System::SystemCallIssue(ERS_HERE, res, "getpwnam_r", message.c_str());
+    throw OksSystem::OksSystemCallIssue(ERS_HERE, res, "getpwnam_r", message.c_str());
   }
   delete[] buf;
 
   m_user_name = s_name;
 } // User
 
-System::User::User(const User &other) throw() {
+OksSystem::User::User(const User &other) throw() {
     m_user_id = other.m_user_id;
     m_user_name = other.m_user_name;
 } // User
@@ -73,15 +73,15 @@ System::User::User(const User &other) throw() {
 // =========
 
 
-System::User::operator uid_t() const throw() {
+OksSystem::User::operator uid_t() const throw() {
     return m_user_id;
 } // uid_t
 
-System::User::operator std::string() const {
+OksSystem::User::operator std::string() const {
     return name();
 } // string 
 
-System::User::operator const char *() const {
+OksSystem::User::operator const char *() const {
     if (m_user_name.empty()) { resolve();}
     return m_user_name.c_str();
 } // char* 
@@ -93,17 +93,17 @@ System::User::operator const char *() const {
   * \return user-id
   */
 
-uid_t System::User::identity() const throw() { 
+uid_t OksSystem::User::identity() const throw() { 
     return m_user_id;
 } // identity
 
 /** This method is responsible for filling in the mutable fields of the class 
   * when needed, this is done by calling the \c getpwuid function, 
   * all fields of the object are then filled in. 
-  * \throw System::SystemCallIssue if the user information cannot be found 
+  * \throw OksSystem::OksSystemCallIssue if the user information cannot be found 
   */
 
-void System::User::resolve() const {
+void OksSystem::User::resolve() const {
   
   errno = 0;
   long bufSize = ::sysconf(_SC_GETPW_R_SIZE_MAX);
@@ -114,7 +114,7 @@ void System::User::resolve() const {
     } else {  
       std::ostringstream message;
       message << "with argument _SC_GETPW_R_SIZE_MAX while getting info about user with id " << m_user_id;
-      throw System::SystemCallIssue(ERS_HERE, errno, "sysconf", message.str().c_str()); 
+      throw OksSystem::OksSystemCallIssue(ERS_HERE, errno, "sysconf", message.str().c_str()); 
     }
   }
 
@@ -132,13 +132,13 @@ void System::User::resolve() const {
       delete[] buf;      
       std::ostringstream eMsg;
       eMsg << "User " << m_user_id << " not found";
-      throw System::SystemCallIssue(ERS_HERE, errno, "getpwuid_r", eMsg.str().c_str());
+      throw OksSystem::OksSystemCallIssue(ERS_HERE, errno, "getpwuid_r", eMsg.str().c_str());
     }
   } else {
     delete[] buf;
     std::ostringstream message;
     message << "while getting info about user with id " << m_user_id;
-    throw System::SystemCallIssue(ERS_HERE, res, "getpwnam_r", message.str().c_str());
+    throw OksSystem::OksSystemCallIssue(ERS_HERE, res, "getpwnam_r", message.str().c_str());
   }
   delete[] buf;
 
@@ -146,10 +146,10 @@ void System::User::resolve() const {
 
 /** This method is the same as \c resolve() but does not throw exceptions.
   * Instead the method silently fails 
-  * \see System::User::resolve()
+  * \see OksSystem::User::resolve()
   */
 
-void System::User::resolve_safe() const throw() {
+void OksSystem::User::resolve_safe() const throw() {
 
   errno = 0;
   long bufSize = ::sysconf(_SC_GETPW_R_SIZE_MAX);
@@ -192,7 +192,7 @@ void System::User::resolve_safe() const throw() {
   * \return the name of user 
   */
 
-const std::string & System::User::name() const {
+const std::string & OksSystem::User::name() const {
     if (m_user_name.empty()) { resolve();}
     return m_user_name;
 } // name
@@ -201,7 +201,7 @@ const std::string & System::User::name() const {
   * \return the name of user
   */
 
-const std::string &  System::User::name_safe() const throw() {
+const std::string &  OksSystem::User::name_safe() const throw() {
     if (m_user_name.empty()) { resolve_safe(); }
     return m_user_name;
 } // name
@@ -210,7 +210,7 @@ const std::string &  System::User::name_safe() const throw() {
   * \return path to home directory 
   */
 
-const std::string & System::User::home() const {
+const std::string & OksSystem::User::home() const {
     if (m_user_home.empty()) { resolve();}
     return m_user_home;
 } // home
@@ -219,7 +219,7 @@ const std::string & System::User::home() const {
   * \return real name 
   */
 
-const std::string & System::User::real_name() const {
+const std::string & OksSystem::User::real_name() const {
     if (m_user_real_name.empty()) { resolve();}
     return m_user_real_name;
 } // real_name
@@ -229,12 +229,12 @@ const std::string & System::User::real_name() const {
   * (typically because the current user is root). 
   */
 
-void System::User::setuid() const {
+void OksSystem::User::setuid() const {
     const int status = ::setuid(m_user_id); 
     if (status<0) {
       std::ostringstream message;
       message << "while setting the effective user ID to " << m_user_id << "(" << this->name_safe() << ")";
-      throw System::SystemCallIssue( ERS_HERE, errno, "setuid", message.str().c_str() );
+      throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "setuid", message.str().c_str() );
     } 
 } // setuid
 
@@ -245,7 +245,7 @@ void System::User::setuid() const {
   * \return parameter stream
   */
 
-std::ostream& operator<<(std::ostream& stream, const System::User& user) throw() {
+std::ostream& operator<<(std::ostream& stream, const OksSystem::User& user) throw() {
     unsigned int i = (unsigned int) user.identity(); 
     const std::string name = user.name_safe();
     stream << name << '(' << i << ')';
@@ -258,7 +258,7 @@ std::ostream& operator<<(std::ostream& stream, const System::User& user) throw()
   * \return true if they are equal
   */
 
-bool operator ==(const System::User &a, const System::User &b)  throw() {
+bool operator ==(const OksSystem::User &a, const OksSystem::User &b)  throw() {
     return a.identity() == b.identity();
 } // 
 
@@ -268,7 +268,7 @@ bool operator ==(const System::User &a, const System::User &b)  throw() {
  * \return true if they are not equal
  */
 
-bool operator !=(const System::User &a, const System::User &b)  throw() {
+bool operator !=(const OksSystem::User &a, const OksSystem::User &b)  throw() {
     return a.identity() != b.identity();
 } // 
 

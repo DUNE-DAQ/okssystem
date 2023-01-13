@@ -22,20 +22,20 @@
 #include "ers/Assertion.hpp"
 #include "ers/ers.hpp"
 
-#include "system/Environment.hpp"
-#include "system/Executable.hpp"
-#include "system/Process.hpp"
-#include "system/Descriptor.hpp"
-#include "system/exceptions.hpp"
+#include "okssystem/Environment.hpp"
+#include "okssystem/Executable.hpp"
+#include "okssystem/Process.hpp"
+#include "okssystem/Descriptor.hpp"
+#include "okssystem/exceptions.hpp"
 
-const char* const System::Executable::SHELL_COMMAND = "/bin/sh";
-const char* const System::Executable::SHELL_COMMAND_PARAM = "-c";
+const char* const OksSystem::Executable::SHELL_COMMAND = "/bin/sh";
+const char* const OksSystem::Executable::SHELL_COMMAND_PARAM = "-c";
 
-/** This method is a safe replacement for the system function.
+/** This method is a safe replacement for the okssystem function.
   * It basically offers the same functionality with better error handling.
   * The command is executed in a shell via \c /bin/sh \c -c. 
   * If the command is successfull (return value 0), this method returns the resulting string.  
-  * If the command fails, this method throws an exception of type \c system::ExecutionIssue.
+  * If the command fails, this method throws an exception of type \c okssystem::ExecutionIssue.
   * This exception contains the return code and the content of stderr. 
   * \param command the command to execute 
   * \return the content of the stdout stream for the executed command 
@@ -43,18 +43,18 @@ const char* const System::Executable::SHELL_COMMAND_PARAM = "-c";
   */ 
 
 
-std::string System::Executable::system(const std::string &command) {
-    System::Executable shell(SHELL_COMMAND);
+std::string OksSystem::Executable::okssystem(const std::string &command) {
+    OksSystem::Executable shell(SHELL_COMMAND);
     std::vector<std::string> params;
     params.push_back(SHELL_COMMAND_PARAM);
     params.push_back(command);
     return shell.pipe_in(params); 
 } // std::string
 
-System::Executable::Executable(const System::File &file) : System::File(file) {}
-System::Executable::Executable(const char* filename) : System::File(filename) {}
-System::Executable::Executable(const std::string &filename) : System::File(filename) {}
-System::Executable::~Executable() {}
+OksSystem::Executable::Executable(const OksSystem::File &file) : OksSystem::File(file) {}
+OksSystem::Executable::Executable(const char* filename) : OksSystem::File(filename) {}
+OksSystem::Executable::Executable(const std::string &filename) : OksSystem::File(filename) {}
+OksSystem::Executable::~Executable() {}
 
 
 /** Core execution method. 
@@ -64,11 +64,11 @@ System::Executable::~Executable() {}
   * \note this method should not be called directly 
   */
 
-void System::Executable::exec(char** argv) const {
+void OksSystem::Executable::exec(char** argv) const {
     ERS_PRECONDITION(argv);
     ERS_PRECONDITION(argv[0]);
     const int status = ::execv(argv[0],argv);
-    throw System::ExecutionIssue( ERS_HERE, errno, argv[0], status ); 
+    throw OksSystem::ExecutionIssue( ERS_HERE, errno, argv[0], status ); 
 } // exec
 
 /** Core execution method. 
@@ -78,12 +78,12 @@ void System::Executable::exec(char** argv) const {
   * \param argv array of arguments, with name of the executable in first position
   * \param env array containing the environment the process will be started with
   */
-void System::Executable::exec(char** const argv, char** const env) const {
+void OksSystem::Executable::exec(char** const argv, char** const env) const {
     ERS_PRECONDITION(argv);
     ERS_PRECONDITION(argv[0]);
     ERS_PRECONDITION(env);
     const int status = ::execve(argv[0],argv,env);
-    throw System::ExecutionIssue( ERS_HERE, errno, argv[0], status );   
+    throw OksSystem::ExecutionIssue( ERS_HERE, errno, argv[0], status );   
 }
 
 /** Simple execution method. 
@@ -91,14 +91,14 @@ void System::Executable::exec(char** const argv, char** const env) const {
   * The \c argv structure is allocated dynamically and new string copied into it. 
   */
 
-void System::Executable::exec(const param_collection &params) const {
+void OksSystem::Executable::exec(const param_collection &params) const {
     const int argc = params.size(); // number of parameters
     const int argclen = argc+2;   // size of array parameters + program name + null pointer
     char **argv = (char **) calloc(sizeof(char*),argclen);
-    SYSTEM_ALLOC_CHECK(argv,sizeof(char*)*argclen);
+    OKSSYSTEM_ALLOC_CHECK(argv,sizeof(char*)*argclen);
     const char* name = *this;
     argv[0] = strdup(name);
-    SYSTEM_ALLOC_CHECK(argv[0],strlen(name));
+    OKSSYSTEM_ALLOC_CHECK(argv[0],strlen(name));
     for(int i=0;i<argc;i++) {
 	argv[i+1] = strdup(params[i].c_str());
     } // loop over args
@@ -106,7 +106,7 @@ void System::Executable::exec(const param_collection &params) const {
     try {
 	exec(argv); 
     } 
-    catch(System::ExecutionIssue &ex) {
+    catch(OksSystem::ExecutionIssue &ex) {
       for(int i=0;argv[i]!=0;i++) {
     	free(argv[i]); 
       } // for
@@ -127,7 +127,7 @@ void System::Executable::exec(const param_collection &params) const {
   * \param envs table of the environnement variables set for the executable
   */
 
-void System::Executable::exec(const param_collection &params, const env_collection &envs) const {
+void OksSystem::Executable::exec(const param_collection &params, const env_collection &envs) const {
 
   // Elaborate the environment
   const unsigned int envArraySize = envs.size() + 1; // The last elements must be NULL
@@ -176,7 +176,7 @@ void System::Executable::exec(const param_collection &params, const env_collecti
   try {
     exec(par, env);
   }
-  catch(System::ExecutionIssue& ex) {
+  catch(OksSystem::ExecutionIssue& ex) {
     // if we are here it means that the exec call failed!!!
     // Free the allocated memory
     for(unsigned int i = 0; i < envArraySize; ++i) {
@@ -201,7 +201,7 @@ void System::Executable::exec(const param_collection &params, const env_collecti
   * \return A process object representing the started process
   */
 
-System::Process System::Executable::start(const param_collection &params) const {
+OksSystem::Process OksSystem::Executable::start(const param_collection &params) const {
 
   // Block all signals before fork()
   sigset_t new_set;
@@ -222,7 +222,7 @@ System::Process System::Executable::start(const param_collection &params) const 
     try {
       exec(params);
     }
-    catch(System::ExecutionIssue &ex) {
+    catch(OksSystem::ExecutionIssue &ex) {
       ers::warning(ex);
       _exit(EXIT_FAILURE);
     }
@@ -244,7 +244,7 @@ System::Process System::Executable::start(const param_collection &params) const 
   // Restore the original signal mask in case of a fork() failure
   pthread_sigmask(SIG_SETMASK, &old_set, NULL);
   
-  throw System::SystemCallIssue( ERS_HERE, errno, "fork", "" );// We are screwed up 
+  throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "fork", "" );// We are screwed up 
 } // start
 
 
@@ -253,7 +253,7 @@ System::Process System::Executable::start(const param_collection &params) const 
   * \return A process object representing the started process
   */
 
-System::Process System::Executable::start_and_forget(const param_collection &params) const {
+OksSystem::Process OksSystem::Executable::start_and_forget(const param_collection &params) const {
   
   // Block all signals before fork()
   sigset_t new_set;
@@ -277,7 +277,7 @@ System::Process System::Executable::start_and_forget(const param_collection &par
     try {
       exec(params);
     }
-    catch(System::ExecutionIssue &ex) {
+    catch(OksSystem::ExecutionIssue &ex) {
       ers::warning(ex);
       _exit(EXIT_FAILURE);
     }
@@ -298,7 +298,7 @@ System::Process System::Executable::start_and_forget(const param_collection &par
   // Restore the original signal mask in case of a fork() failure
   pthread_sigmask(SIG_SETMASK, &old_set, NULL);
 
-  throw System::SystemCallIssue( ERS_HERE, errno, "fork", "" );// We are screwed up 
+  throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "fork", "" );// We are screwed up 
 } // start
 
 
@@ -308,7 +308,7 @@ System::Process System::Executable::start_and_forget(const param_collection &par
   * \note a more efficient version could use the underlying STL buffer
   */
 
-void System::Executable::copy_fd(int fd, std::ostream &target) {
+void OksSystem::Executable::copy_fd(int fd, std::ostream &target) {
     while(true) {
 	char buffer[256];
 	long status = read(fd,buffer,sizeof(buffer));
@@ -322,17 +322,17 @@ void System::Executable::copy_fd(int fd, std::ostream &target) {
 
 /** \overload */
 
-std::string System::Executable::pipe_in(const param_collection &params) const {
+std::string OksSystem::Executable::pipe_in(const param_collection &params) const {
 
     int input_pipe[2];
     int data_pipe[2];
     int error_pipe[2];
     const int input_pipe_status = pipe(input_pipe);
-    if (input_pipe_status<0) throw System::SystemCallIssue( ERS_HERE, errno, "pipe", "" );
+    if (input_pipe_status<0) throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "pipe", "" );
     const int data_pipe_status = pipe(data_pipe);
-    if (data_pipe_status<0) throw System::SystemCallIssue( ERS_HERE, errno, "pipe", "" );
+    if (data_pipe_status<0) throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "pipe", "" );
     const int error_pipe_status = pipe(error_pipe);
-    if (error_pipe_status<0) throw System::SystemCallIssue( ERS_HERE, errno, "pipe", "" );
+    if (error_pipe_status<0) throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "pipe", "" );
 
     // Block all signals before fork()
     sigset_t new_set;
@@ -357,7 +357,7 @@ std::string System::Executable::pipe_in(const param_collection &params) const {
       try {
 	this->exec(params);
       }
-      catch(System::ExecutionIssue &ex) {
+      catch(OksSystem::ExecutionIssue &ex) {
 	ers::warning(ex);
 	_exit(EXIT_FAILURE);
       }
@@ -394,7 +394,7 @@ std::string System::Executable::pipe_in(const param_collection &params) const {
       } // if
       std::string command = to_string(params); 
       std::string error_str = err_stream.str(); 
-      throw System::ExecutionIssue(ERS_HERE,errno,command.c_str(),child_status);
+      throw OksSystem::ExecutionIssue(ERS_HERE,errno,command.c_str(),child_status);
     } // we are the parent
 
     // Restore the original signal mask in case of a fork() failure
@@ -410,19 +410,19 @@ std::string System::Executable::pipe_in(const param_collection &params) const {
  * \return content of stdout
  * \param params the parameters to the executable
  * \param envs the environnement variables to set
- * \throw System::ExecutionIssue if command execution did not return 0.
- * \throw System::ExecFail if the exec system call failed.
- * \throw System::PipeIssue if the pipe system call failed. 
+ * \throw OksSystem::ExecutionIssue if command execution did not return 0.
+ * \throw OksSystem::ExecFail if the exec okssystem call failed.
+ * \throw OksSystem::PipeIssue if the pipe okssystem call failed. 
  */
 
-std::string System::Executable::pipe_in(const param_collection &params, const env_collection &envs) const {
-    System::Environment::set(envs);
+std::string OksSystem::Executable::pipe_in(const param_collection &params, const env_collection &envs) const {
+    OksSystem::Environment::set(envs);
     return pipe_in(params); 
 } // pipe_in
 
 /** \overload */
 
-System::Process System::Executable::pipe_out(const param_collection &params, const File &input_file, const File &output_file, const File &error_file,mode_t perm) const {
+OksSystem::Process OksSystem::Executable::pipe_out(const param_collection &params, const File &input_file, const File &output_file, const File &error_file,mode_t perm) const {
 
   // Block all signals before fork()
   sigset_t new_set;
@@ -430,9 +430,9 @@ System::Process System::Executable::pipe_out(const param_collection &params, con
   sigfillset(&new_set);
   pthread_sigmask(SIG_SETMASK, &new_set, &old_set);
 
-  System::Descriptor in(&input_file,System::Descriptor::flags(true,false),perm);   // May throw System::OpenFileIssue
-  System::Descriptor out(&output_file,System::Descriptor::flags(false,true),perm);
-  System::Descriptor err(&error_file,System::Descriptor::flags(false,true),perm);
+  OksSystem::Descriptor in(&input_file,OksSystem::Descriptor::flags(true,false),perm);   // May throw OksSystem::OpenFileIssue
+  OksSystem::Descriptor out(&output_file,OksSystem::Descriptor::flags(false,true),perm);
+  OksSystem::Descriptor err(&error_file,OksSystem::Descriptor::flags(false,true),perm);
   
   const pid_t child_id = fork();
   if (0 == child_id) { // we are the child
@@ -453,11 +453,11 @@ System::Process System::Executable::pipe_out(const param_collection &params, con
       ::close(err.fd());      
       this->exec(params);
     }
-    catch(System::ExecutionIssue &ex) {
+    catch(OksSystem::ExecutionIssue &ex) {
       ers::warning(ex);
       _exit(EXIT_FAILURE);
     }
-    catch(System::PosixIssue &ex) {
+    catch(OksSystem::PosixIssue &ex) {
       ers::warning(ex);
       _exit(EXIT_FAILURE);
     }
@@ -478,7 +478,7 @@ System::Process System::Executable::pipe_out(const param_collection &params, con
   // Restore the original signal mask in case of a fork() failure
   pthread_sigmask(SIG_SETMASK, &old_set, NULL);
 
-  throw System::SystemCallIssue( ERS_HERE, errno, "fork", "" );// We are screwed up 
+  throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "fork", "" );// We are screwed up 
 } // pipe_out
 
 /** Runs the executable and redirects the two output streams 
@@ -490,7 +490,7 @@ System::Process System::Executable::pipe_out(const param_collection &params, con
   * \param perm permissions for both output streams 
   */
 
-System::Process System::Executable::pipe_out(const param_collection &params, const env_collection &envs, const File &input_file, const File &output_file, const File &error_file, mode_t perm) const {
+OksSystem::Process OksSystem::Executable::pipe_out(const param_collection &params, const env_collection &envs, const File &input_file, const File &output_file, const File &error_file, mode_t perm) const {
 
   // Block all signals before fork()
   sigset_t new_set;
@@ -498,9 +498,9 @@ System::Process System::Executable::pipe_out(const param_collection &params, con
   sigfillset(&new_set);
   pthread_sigmask(SIG_SETMASK, &new_set, &old_set);
 
-  System::Descriptor in(&input_file,System::Descriptor::flags(true,false),perm);   // May throw System::OpenFileIssue
-  System::Descriptor out(&output_file,System::Descriptor::flags(false,true),perm);
-  System::Descriptor err(&error_file,System::Descriptor::flags(false,true),perm);
+  OksSystem::Descriptor in(&input_file,OksSystem::Descriptor::flags(true,false),perm);   // May throw OksSystem::OpenFileIssue
+  OksSystem::Descriptor out(&output_file,OksSystem::Descriptor::flags(false,true),perm);
+  OksSystem::Descriptor err(&error_file,OksSystem::Descriptor::flags(false,true),perm);
   
   const pid_t child_id = fork();
   if (0 == child_id) { // we are the child
@@ -521,11 +521,11 @@ System::Process System::Executable::pipe_out(const param_collection &params, con
       ::close(err.fd());
       this->exec(params,envs);
     }
-    catch(System::ExecutionIssue &ex) {
+    catch(OksSystem::ExecutionIssue &ex) {
       ers::warning(ex);
       _exit(EXIT_FAILURE);
     }
-    catch(System::PosixIssue &ex) {
+    catch(OksSystem::PosixIssue &ex) {
       ers::warning(ex);
       _exit(EXIT_FAILURE);
     }
@@ -546,7 +546,7 @@ System::Process System::Executable::pipe_out(const param_collection &params, con
   // Restore the original signal mask in case of a fork() failure
   pthread_sigmask(SIG_SETMASK, &old_set, NULL);
 
-  throw System::SystemCallIssue( ERS_HERE, errno, "fork", "" );// We are screwed up
+  throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "fork", "" );// We are screwed up
 
 } //pipe_out
 
@@ -555,7 +555,7 @@ System::Process System::Executable::pipe_out(const param_collection &params, con
   * \param envs table of the environnement variables set for the executable
   */
 
-System::Process System::Executable::start(const param_collection &params, const env_collection &envs) const {
+OksSystem::Process OksSystem::Executable::start(const param_collection &params, const env_collection &envs) const {
 
   // Block all signals before fork()
   sigset_t new_set;
@@ -576,7 +576,7 @@ System::Process System::Executable::start(const param_collection &params, const 
     try {
       exec(params,envs);
     }
-    catch(System::ExecutionIssue &ex) {
+    catch(OksSystem::ExecutionIssue &ex) {
       ers::warning(ex);
       _exit(EXIT_FAILURE);
     }
@@ -597,7 +597,7 @@ System::Process System::Executable::start(const param_collection &params, const 
   // Restore the original signal mask in case of a fork() failure
   pthread_sigmask(SIG_SETMASK, &old_set, NULL);
 
-  throw System::SystemCallIssue( ERS_HERE, errno, "fork", "" );// We are screwed up 
+  throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "fork", "" );// We are screwed up 
 } // start
 
 /** Converts the executable name and a list of parameters into a string,
@@ -606,7 +606,7 @@ System::Process System::Executable::start(const param_collection &params, const 
   * \return a string with command name and parameters separated by spaces 
   */
 
-std::string System::Executable::to_string(const param_collection &params) const {
+std::string OksSystem::Executable::to_string(const param_collection &params) const {
     std::ostringstream stream;
     stream << m_full_name;
     for(param_collection::const_iterator pos=params.begin();pos!=params.end();++pos) {

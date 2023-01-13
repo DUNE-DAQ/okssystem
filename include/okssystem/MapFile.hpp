@@ -1,18 +1,18 @@
 /*
  *  MapFile.h
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 07.01.05.
  *  Copyright 2005 CERN. All rights reserved.
  *
  */
 
-#ifndef SYSTEM_MAP_FILE
-#define SYSTEM_MAP_FILE
+#ifndef OKSSYSTEM_MAP_FILE
+#define OKSSYSTEM_MAP_FILE
 
-#include "system/File.hpp"
+#include "okssystem/File.hpp"
 
-namespace System {
+namespace OksSystem {
     
     class Descriptor ; 
     
@@ -37,7 +37,7 @@ namespace System {
       bool is_loaded() const throw() ;         /**< \brief is the map loaded in memory */
       void *address() const throw() ;          /**< \brief the address of the memory mapped file */
       size_t memory_size() const throw() ;     /**< \brief the size of the map */
-      System::Descriptor* fd() const throw() ; /**< \brief the file descriptor. This method returns a valid pointer only if called after map(). */
+      OksSystem::Descriptor* fd() const throw() ; /**< \brief the file descriptor. This method returns a valid pointer only if called after map(). */
       
     protected:
 

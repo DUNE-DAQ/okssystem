@@ -1,6 +1,6 @@
 /*
  *  StringMemoryArea.cxx
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 17.02.05.
  *  Copyright 2005 CERN. All rights reserved.
@@ -10,17 +10,17 @@
 #include <sstream>
 #include "ers/ers.hpp"
 
-#include "system/StringMemoryArea.hpp"
+#include "okssystem/StringMemoryArea.hpp"
 
-const char System::StringMemoryArea::STRING_SEPARATOR = (char) 3;
-const char System::StringMemoryArea::MAP_ENTRY_SEPARATOR = (char) 4; 
+const char OksSystem::StringMemoryArea::STRING_SEPARATOR = (char) 3;
+const char OksSystem::StringMemoryArea::MAP_ENTRY_SEPARATOR = (char) 4; 
 
 /** Inserts a string at the end of the string region  
  * \param str the string to insert 
  * \return the offset in the string region of the string 
  */
 
-System::StringMemoryArea::offset_t System::StringMemoryArea::add(const char *str) {
+OksSystem::StringMemoryArea::offset_t OksSystem::StringMemoryArea::add(const char *str) {
     ERS_PRECONDITION(str); 
     const size_t l = strlen(str); 
     const offset_t offset = last_string(); 
@@ -40,7 +40,7 @@ System::StringMemoryArea::offset_t System::StringMemoryArea::add(const char *str
  * \return the lenght of the cleared string
  */
 
-size_t System::StringMemoryArea::clear(offset_t offset) {
+size_t OksSystem::StringMemoryArea::clear(offset_t offset) {
     char *data = string_area_write(); 
     size_t count = 0; 
     while(data[count+offset]) {
@@ -56,7 +56,7 @@ size_t System::StringMemoryArea::clear(offset_t offset) {
  * \note the actual characters are in the shared area 
  */
 
-const char* System::StringMemoryArea::get_string(offset_t offset) const {
+const char* OksSystem::StringMemoryArea::get_string(offset_t offset) const {
     if (offset==0) return 0; 
     ERS_RANGE_CHECK(1, offset, string_area_size());
     const char* str = string_area_read();
@@ -75,7 +75,7 @@ const char* System::StringMemoryArea::get_string(offset_t offset) const {
  *       This can lead to fragmentation, so you should avoid replacing strings. 
  */
 
-System::StringMemoryArea::offset_t System::StringMemoryArea::insert(offset_t offset, const char* str) {
+OksSystem::StringMemoryArea::offset_t OksSystem::StringMemoryArea::insert(offset_t offset, const char* str) {
     ERS_PRECONDITION(str);
     if (offset==0) return add(str); 
     ERS_RANGE_CHECK(1, offset, string_area_size());
@@ -95,7 +95,7 @@ System::StringMemoryArea::offset_t System::StringMemoryArea::insert(offset_t off
   * \param str the string to insert
   */
 
-void System::StringMemoryArea::insert(offset_t *offset, const char* str) {
+void OksSystem::StringMemoryArea::insert(offset_t *offset, const char* str) {
     ERS_PRECONDITION(offset); 
     const offset_t n_offset = insert(*offset,str); 
     *offset = n_offset; 
@@ -106,9 +106,9 @@ void System::StringMemoryArea::insert(offset_t *offset, const char* str) {
   * \return a vector of strings 
   */
 
-System::StringMemoryArea::str_vector System::StringMemoryArea::get_vector(offset_t offset) const {
+OksSystem::StringMemoryArea::str_vector OksSystem::StringMemoryArea::get_vector(offset_t offset) const {
 
-    System::StringMemoryArea::str_vector vector; 
+    OksSystem::StringMemoryArea::str_vector vector; 
     const char *str = get_string(offset);
 
     if(str != 0) {
@@ -142,7 +142,7 @@ System::StringMemoryArea::str_vector System::StringMemoryArea::get_vector(offset
   * \note the strings should not contain the caracter STRING_SEPARATOR (03)
   */
 
-System::StringMemoryArea::offset_t System::StringMemoryArea::insert(offset_t offset, const str_vector &vect) {
+OksSystem::StringMemoryArea::offset_t OksSystem::StringMemoryArea::insert(offset_t offset, const str_vector &vect) {
   //    ERS_RANGE_CHECK(0, offset, string_area_size());
     str_vector::const_iterator pos; 
     std::ostringstream stream; 
@@ -162,7 +162,7 @@ System::StringMemoryArea::offset_t System::StringMemoryArea::insert(offset_t off
  * \note the strings should not contain the caracter STRING_SEPARATOR (03)
  */
 
-void System::StringMemoryArea::insert(offset_t *offset, const str_vector &vect) {
+void OksSystem::StringMemoryArea::insert(offset_t *offset, const str_vector &vect) {
     ERS_PRECONDITION(offset); 
     const offset_t n_offset = insert(*offset,vect); 
     *offset = n_offset; 
@@ -173,10 +173,10 @@ void System::StringMemoryArea::insert(offset_t *offset, const str_vector &vect) 
   * \return a map of strings 
   */
 
-System::StringMemoryArea::str_map System::StringMemoryArea::get_map(offset_t offset) const {
+OksSystem::StringMemoryArea::str_map OksSystem::StringMemoryArea::get_map(offset_t offset) const {
 
     ERS_RANGE_CHECK(1, offset, string_area_size());
-    System::StringMemoryArea::str_map map; 
+    OksSystem::StringMemoryArea::str_map map; 
     const char* str = get_string(offset); 
     
     if(str != 0) {
@@ -218,7 +218,7 @@ System::StringMemoryArea::str_map System::StringMemoryArea::get_map(offset_t off
   * \note the strings should not contain the caracter STRING_SEPARATOR (03)
   */
 
-System::StringMemoryArea::offset_t System::StringMemoryArea::insert(offset_t offset, const str_map &map) {
+OksSystem::StringMemoryArea::offset_t OksSystem::StringMemoryArea::insert(offset_t offset, const str_map &map) {
   //    ERS_RANGE_CHECK(0, offset, string_area_size());
     str_map::const_iterator pos; 
     std::ostringstream stream; 
@@ -240,7 +240,7 @@ System::StringMemoryArea::offset_t System::StringMemoryArea::insert(offset_t off
  * \note the strings should not contain the caracter STRING_SEPARATOR (03)
  */
  
-void System::StringMemoryArea::insert(offset_t *offset, const str_map &map) {
+void OksSystem::StringMemoryArea::insert(offset_t *offset, const str_map &map) {
     ERS_PRECONDITION(offset); 
     const offset_t n_offset = insert(*offset,map); 
     *offset = n_offset; 

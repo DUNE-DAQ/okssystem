@@ -1,14 +1,14 @@
 /*
  *  File.h
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 04.01.05.
  *  Copyright 2005 CERN. All rights reserved.
  *
  */
 
-#ifndef SYSTEM_FILE
-#define SYSTEM_FILE
+#ifndef OKSSYSTEM_FILE
+#define OKSSYSTEM_FILE
 
 #include <string>
 #include <vector>
@@ -16,9 +16,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "system/User.hpp"
+#include "okssystem/User.hpp"
 
-namespace System {
+namespace OksSystem {
     
     /** This class represents a file.
       * it provides tools to manipulate files in a simple way. 
@@ -31,7 +31,7 @@ namespace System {
     
     class File {
 public: 
-	typedef std::vector<System::File>  file_list_t ; 	
+	typedef std::vector<OksSystem::File>  file_list_t ; 	
 protected:
 	std::string m_full_name ;                                     ///< \brief full name (path) of the file */
 	void set_name(const std::string &name);                       ///< \brief sets the name of the file */
@@ -80,9 +80,9 @@ public:
 	std::string extension() const throw();                        ///< \brief extension for file */
 	int depth() const throw() ;                                   ///< \brief depth of the file */
     
-	System::File parent() const ;                                 ///< \brief parent of the current file */
-	System::File child(const std::string &name) const ;           ///< \brief named child of the current directory */
-	System::File temporary(const std::string &prefix) const ; 
+	OksSystem::File parent() const ;                                 ///< \brief parent of the current file */
+	OksSystem::File child(const std::string &name) const ;           ///< \brief named child of the current directory */
+	OksSystem::File temporary(const std::string &prefix) const ; 
 	
 	bool exists() const throw() ;                                 ///< \brief does the file exist */
 	mode_t permissions() const ;                                  ///< \brief permissions for the file */
@@ -112,11 +112,11 @@ public:
 	std::istream* input() const ;                                 ///< \brief returns an input stream from the file*/
 	std::ostream* output(bool append=false) const ;               ///< \brief returns an output stream to the file*/
     } ; // File
-} // System
+} // OksSystem
 
-std::ostream& operator<<(std::ostream& stream, const System::File& file);
-bool operator ==(const System::File &a, const System::File &b)  throw(); 
-bool operator !=(const System::File &a, const System::File &b)  throw(); 
+std::ostream& operator<<(std::ostream& stream, const OksSystem::File& file);
+bool operator ==(const OksSystem::File &a, const OksSystem::File &b)  throw(); 
+bool operator !=(const OksSystem::File &a, const OksSystem::File &b)  throw(); 
 
 
 #endif

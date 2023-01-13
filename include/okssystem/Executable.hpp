@@ -1,22 +1,22 @@
 /*
  *  Executable.h
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 06.01.05.
  *  Copyright 2005 CERN. All rights reserved.
  *
  */
 
-#ifndef SYSTEM_EXECUTABLE
-#define SYSTEM_EXECUTABLE
+#ifndef OKSSYSTEM_EXECUTABLE
+#define OKSSYSTEM_EXECUTABLE
 
 #include <map>
 #include <vector>
 
-#include "system/File.hpp"
-#include "system/Process.hpp"
+#include "okssystem/File.hpp"
+#include "okssystem/Process.hpp"
 
-namespace System {
+namespace OksSystem {
     
     /** This class represents an executable file, that is a program. 
       * The class offers facilities to launch the program with given parameters
@@ -38,9 +38,9 @@ protected:
 	static const char* const SHELL_COMMAND_PARAM ;        /**< \brief parameter to execute in a shell */
 	static void copy_fd(int fd, std::ostream &target) ;   /**< \brief copies the content of a file descriptor into a STL stream */
 public:
-	static std::string system(const std::string &command);                 /**< \brief execute a command in a shell */
+	static std::string okssystem(const std::string &command);                 /**< \brief execute a command in a shell */
 
-	Executable(const System::File &file) ; 
+	Executable(const OksSystem::File &file) ; 
 	Executable(const char* filename) ;               
 	Executable(const std::string &filename) ;
 	~Executable() ;
@@ -60,7 +60,7 @@ public:
 	
     } ; // Executable
     
-} // System
+} // OksSystem
 
 #endif
 

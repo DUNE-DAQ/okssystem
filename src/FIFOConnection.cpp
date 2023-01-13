@@ -1,6 +1,6 @@
 /*
  *  FIFOConnection.cxx
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 07.04.05.
  *  Copyright 2005 CERN. All rights reserved.
@@ -11,33 +11,33 @@
 
 #include "ers/ers.hpp"
 
-#include "system/FIFOConnection.hpp"
-#include "system/exceptions.hpp"
+#include "okssystem/FIFOConnection.hpp"
+#include "okssystem/exceptions.hpp"
 
-const unsigned int System::FIFOConnection::MAX_MESSAGE_LEN = 512;
+const unsigned int OksSystem::FIFOConnection::MAX_MESSAGE_LEN = 512;
 
-/** Constructor, does not actually create the named pipe in the file system. 
+/** Constructor, does not actually create the named pipe in the file okssystem. 
   * To create it, use the \c make method
   * \param name the name (full path) of the named pipe
   */
 
-System::FIFOConnection::FIFOConnection(const std::string &name) : System::File(name) {
+OksSystem::FIFOConnection::FIFOConnection(const std::string &name) : OksSystem::File(name) {
   m_fifo_fd = 0;
   m_is_blocking = true;
 } 
 
 /** \overload */
 
-System::FIFOConnection::FIFOConnection(const File &file) : System::File(file) {
+OksSystem::FIFOConnection::FIFOConnection(const File &file) : OksSystem::File(file) {
   m_fifo_fd = 0;
   m_is_blocking = true;
 } 
 
-System::FIFOConnection::~FIFOConnection() {
+OksSystem::FIFOConnection::~FIFOConnection() {
   delete m_fifo_fd;
 }
 
-void System::FIFOConnection::make(mode_t perm) const {
+void OksSystem::FIFOConnection::make(mode_t perm) const {
     File::make_fifo(perm); 
 } // make
 
@@ -46,12 +46,12 @@ void System::FIFOConnection::make(mode_t perm) const {
   * \note maximum message length is MAX_MESSAGE_LEN-1 bytes
   */
 
-std::string System::FIFOConnection::read_message() const {
+std::string OksSystem::FIFOConnection::read_message() const {
     ERS_ASSERT_MSG(exists(),"FIFO "<< c_full_name() << " does not exist."); 
     if (! is_fifo()) {
-	ers::warning(System::Exception(ERS_HERE, std::string(c_full_name()) + std::string(" is not a FIFO"))); 
+	ers::warning(OksSystem::Exception(ERS_HERE, std::string(c_full_name()) + std::string(" is not a FIFO"))); 
     } // should probably be FIFO
-    System::Descriptor connection_fd(this,O_RDONLY,0); 
+    OksSystem::Descriptor connection_fd(this,O_RDONLY,0); 
     char buffer[MAX_MESSAGE_LEN];
     while(true) {
 	const int status = connection_fd.read(buffer,sizeof(buffer)-1);
@@ -64,14 +64,14 @@ std::string System::FIFOConnection::read_message() const {
     } // while 
 } // read_message
 
-void System::FIFOConnection::send_message(const std::string &message) const {
+void OksSystem::FIFOConnection::send_message(const std::string &message) const {
     ERS_ASSERT_MSG(exists(),"FIFO "<< c_full_name() << " does not exist. Cannot put "<< message << " into FIFO.");
     if (! is_fifo()) {
-	ers::warning(System::Exception(ERS_HERE, std::string(c_full_name()) + std::string(" is not a FIFO"))); 
+	ers::warning(OksSystem::Exception(ERS_HERE, std::string(c_full_name()) + std::string(" is not a FIFO"))); 
     } // should probably be FIFO 
     const unsigned int l = message.size();
     ERS_RANGE_CHECK(1,l,MAX_MESSAGE_LEN); 
-    System::Descriptor connection_fd(this,O_WRONLY,0);
+    OksSystem::Descriptor connection_fd(this,O_WRONLY,0);
     connection_fd.write(message.data(),l); 
 } // send_message 
 
@@ -85,7 +85,7 @@ void System::FIFOConnection::send_message(const std::string &message) const {
  *       \li This method will block or not depending on the way the FIFO has been opened.
  */
 
-void System::FIFOConnection::send(const std::string &message) const {
+void OksSystem::FIFOConnection::send(const std::string &message) const {
     ERS_ASSERT(m_fifo_fd);
     const unsigned int l = message.size();
     ERS_RANGE_CHECK(1,l,MAX_MESSAGE_LEN); 
@@ -102,7 +102,7 @@ void System::FIFOConnection::send(const std::string &message) const {
  *       \li This method will block or not depending on the way the FIFO has been opened.
  */
 
-std::string System::FIFOConnection::read() const {
+std::string OksSystem::FIFOConnection::read() const {
     ERS_ASSERT(m_fifo_fd);    
     char buffer[MAX_MESSAGE_LEN];
     while(true) {
@@ -119,11 +119,11 @@ std::string System::FIFOConnection::read() const {
 
 /**
  * \brief It opens the FIFO in read-only mode.
- * \return A pointer to a System::Descriptor object holding the FIFO file descriptor.
+ * \return A pointer to a OksSystem::Descriptor object holding the FIFO file descriptor.
  * \param block If \c TRUE the FIFO will be opened in blocking mode.
  */
 
-System::Descriptor* System::FIFOConnection::open_r(bool block) {
+OksSystem::Descriptor* OksSystem::FIFOConnection::open_r(bool block) {
 
   ERS_ASSERT(!m_fifo_fd);
 
@@ -135,9 +135,9 @@ System::Descriptor* System::FIFOConnection::open_r(bool block) {
   }
 
   try {
-    m_fifo_fd = new System::Descriptor(this,flags,0);
+    m_fifo_fd = new OksSystem::Descriptor(this,flags,0);
   }
-  catch(System::OpenFileIssue &ex) {
+  catch(OksSystem::OpenFileIssue &ex) {
     delete m_fifo_fd;
     m_fifo_fd = 0;
     throw;
@@ -149,12 +149,12 @@ System::Descriptor* System::FIFOConnection::open_r(bool block) {
 
 /**
  * \brief It opens the FIFO in write-only mode.
- * \return A pointer to a System::Descriptor object holding the FIFO file descriptor.
+ * \return A pointer to a OksSystem::Descriptor object holding the FIFO file descriptor.
  * \param block If \c TRUE the FIFO will be opened in blocking mode.
  */
 
 
-System::Descriptor* System::FIFOConnection::open_w(bool block) {
+OksSystem::Descriptor* OksSystem::FIFOConnection::open_w(bool block) {
   
   ERS_ASSERT(!m_fifo_fd);
 
@@ -166,9 +166,9 @@ System::Descriptor* System::FIFOConnection::open_w(bool block) {
   }
 
   try {
-    m_fifo_fd = new System::Descriptor(this,flags,0);
+    m_fifo_fd = new OksSystem::Descriptor(this,flags,0);
   }
-  catch(System::OpenFileIssue &ex) {
+  catch(OksSystem::OpenFileIssue &ex) {
     delete m_fifo_fd;
     m_fifo_fd = 0;
     throw;
@@ -180,11 +180,11 @@ System::Descriptor* System::FIFOConnection::open_w(bool block) {
 
 /**
  * \brief It opens the FIFO in read and write mode.
- * \return A pointer to a System::Descriptor object holding the FIFO file descriptor.
+ * \return A pointer to a OksSystem::Descriptor object holding the FIFO file descriptor.
  * \param block If \c TRUE the FIFO will be opened in blocking mode.
  */
 
-System::Descriptor* System::FIFOConnection::open_rw(bool block) {
+OksSystem::Descriptor* OksSystem::FIFOConnection::open_rw(bool block) {
   
   ERS_ASSERT(!m_fifo_fd);
 
@@ -196,9 +196,9 @@ System::Descriptor* System::FIFOConnection::open_rw(bool block) {
   }
 
   try {
-    m_fifo_fd = new System::Descriptor(this,flags,0);
+    m_fifo_fd = new OksSystem::Descriptor(this,flags,0);
   }
-  catch(System::OpenFileIssue &ex) {
+  catch(OksSystem::OpenFileIssue &ex) {
     delete m_fifo_fd;
     m_fifo_fd = 0;
     throw;
@@ -214,7 +214,7 @@ System::Descriptor* System::FIFOConnection::open_rw(bool block) {
  *       it is opened using one of the open_r(), open_w() or open_wr() methods.
  */
 
-void System::FIFOConnection::close() {
+void OksSystem::FIFOConnection::close() {
 
   delete m_fifo_fd;
   m_fifo_fd = 0;
@@ -228,7 +228,7 @@ void System::FIFOConnection::close() {
  * \return The FIFO file descriptor.
  */
 
-int System::FIFOConnection::fd() const {
+int OksSystem::FIFOConnection::fd() const {
 
   ERS_ASSERT(m_fifo_fd);
   return m_fifo_fd->fd();

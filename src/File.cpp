@@ -25,31 +25,31 @@
 
 #include "ers/ers.hpp"
 
-#include "system/File.hpp"
-#include "system/exceptions.hpp"
-#include "system/Executable.hpp"
-#include "system/User.hpp"
+#include "okssystem/File.hpp"
+#include "okssystem/exceptions.hpp"
+#include "okssystem/Executable.hpp"
+#include "okssystem/User.hpp"
 
 #define SPACE_CHAR ' ' 
 
-const char * const System::File::HUMAN_SIZE_STR[] = { "B", "KB", "MB", "GB" };
-const char * const System::File::HUMAN_OPEN_STR[] = { "READ", "WRITE", "NOBLOCK", "APPEND", "CREATE", "TRUNCATE","EXCLUSIVE"  };
-const char * const System::File::FILE_COMMAND_PATH = "/usr/bin/file";
-const char * const System::File::FILE_FLAG_STR = "-rwxS";
-const char * const System::File::FILE_PROTOCOL = "file";
+const char * const OksSystem::File::HUMAN_SIZE_STR[] = { "B", "KB", "MB", "GB" };
+const char * const OksSystem::File::HUMAN_OPEN_STR[] = { "READ", "WRITE", "NOBLOCK", "APPEND", "CREATE", "TRUNCATE","EXCLUSIVE"  };
+const char * const OksSystem::File::FILE_COMMAND_PATH = "/usr/bin/file";
+const char * const OksSystem::File::FILE_FLAG_STR = "-rwxS";
+const char * const OksSystem::File::FILE_PROTOCOL = "file";
 
 
-#define READ_CHAR_CODE (System::File::FILE_FLAG_STR[1])
-#define WRITE_CHAR_CODE (System::File::FILE_FLAG_STR[2])
-#define EXECUTE_CHAR_CODE (System::File::FILE_FLAG_STR[3])
-#define NOTHING_CHAR_CODE (System::File::FILE_FLAG_STR[0])
-#define SETUID_CHAR_CODE (System::File::FILE_FLAG_STR[4])
+#define READ_CHAR_CODE (OksSystem::File::FILE_FLAG_STR[1])
+#define WRITE_CHAR_CODE (OksSystem::File::FILE_FLAG_STR[2])
+#define EXECUTE_CHAR_CODE (OksSystem::File::FILE_FLAG_STR[3])
+#define NOTHING_CHAR_CODE (OksSystem::File::FILE_FLAG_STR[0])
+#define SETUID_CHAR_CODE (OksSystem::File::FILE_FLAG_STR[4])
 
 #define SLASH_CHAR '/' 
 #define COLON_CHAR ':'
 #define DOT_CHAR '.' 
 
-const int System::File::KILOBYTE = 1024;
+const int OksSystem::File::KILOBYTE = 1024;
 
 
 // --------------------------------------
@@ -63,7 +63,7 @@ const int System::File::KILOBYTE = 1024;
   * \return the protocol part of an empty string 
   */
 
-std::string System::File::protocol(const std::string &url) throw() {
+std::string OksSystem::File::protocol(const std::string &url) throw() {
     std::string::size_type colon = url.find(COLON_CHAR);
     if (colon==std::string::npos) return std::string();
     return url.substr(0,colon);
@@ -74,7 +74,7 @@ std::string System::File::protocol(const std::string &url) throw() {
   * \return the extension (without the dot) or an empty string 
   */
 
-std::string System::File::extension(const std::string &url) throw() {
+std::string OksSystem::File::extension(const std::string &url) throw() {
     std::string::size_type dot = url.rfind(DOT_CHAR);
     if (dot==std::string::npos) return std::string();
     return url.substr(dot+1);
@@ -85,7 +85,7 @@ std::string System::File::extension(const std::string &url) throw() {
   * \return the short name or the full url if it cannot be found 
   */
 
-std::string System::File::short_name(const std::string &url) throw() {
+std::string OksSystem::File::short_name(const std::string &url) throw() {
     std::string::size_type slash = url.rfind(SLASH_CHAR);
     if (slash==std::string::npos) return url;
     return url.substr(slash+1);
@@ -98,7 +98,7 @@ std::string System::File::short_name(const std::string &url) throw() {
   * \return the uri or the full url if no colon in the string
   */
 
-std::string System::File::uri(const std::string &url) throw() {
+std::string OksSystem::File::uri(const std::string &url) throw() {
     std::string::size_type colon = url.find(COLON_CHAR);
     if (colon==std::string::npos) return url;
     return url.substr(colon+1);
@@ -113,7 +113,7 @@ std::string System::File::uri(const std::string &url) throw() {
   * \return depth or -1 if the format of the path is not understood. 
   */
 
-int System::File::depth(const std::string &path) throw() {
+int OksSystem::File::depth(const std::string &path) throw() {
     if (path[0] == SLASH_CHAR) {
 	int count = 0;
 	std::string rest = path.substr(1); 
@@ -136,7 +136,7 @@ int System::File::depth(const std::string &path) throw() {
   * \return the first line of the text
   */
 
-std::string System::File::first_line(const std::string &text) {
+std::string OksSystem::File::first_line(const std::string &text) {
     std::string::size_type nl = text.find('\n');
     if (nl>0) return text.substr(0,nl); 
     return text;
@@ -148,7 +148,7 @@ std::string System::File::first_line(const std::string &text) {
   * \return a File object
   */
 
-System::File System::File::from_url(const std::string &url) {
+OksSystem::File OksSystem::File::from_url(const std::string &url) {
     std::string prot = protocol(url);
     ERS_PRECONDITION(prot==FILE_PROTOCOL); 
     const std::string path = uri(url); 
@@ -157,7 +157,7 @@ System::File System::File::from_url(const std::string &url) {
 
 /** \return a string containing the working directory for the process */
 
-std::string System::File::working_directory() {
+std::string OksSystem::File::working_directory() {
     char *wd_buffer = getcwd(0,MAXPATHLEN);  
     if (wd_buffer) {
     	std::string directory = std::string(wd_buffer);
@@ -165,15 +165,15 @@ std::string System::File::working_directory() {
 	return directory;
     }
     std::string message("getting the current working directory");
-    throw System::SystemCallIssue( ERS_HERE, errno, "getcwd", message.c_str() );
+    throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "getcwd", message.c_str() );
 } // working_directory 
 
-void System::File::working_directory(const File &dir) {
+void OksSystem::File::working_directory(const File &dir) {
     const char * path = dir.c_full_name(); 
     const int status = ::chdir(path); 
     if (status<0) {
       std::string message = "on directory " + dir.full_name(); 
-      throw System::SystemCallIssue( ERS_HERE, errno, "chdir", message.c_str() );
+      throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "chdir", message.c_str() );
     }
 } // working_directory
 
@@ -182,15 +182,15 @@ void System::File::working_directory(const File &dir) {
   */
 
 
-std::string System::File::expand_home(const std::string path) {
+std::string OksSystem::File::expand_home(const std::string path) {
     ERS_PRECONDITION(! path.empty());
     ERS_PRECONDITION(path[0] == '~'); 
     std::string::size_type slash = path.find('/');
     const std::string user_name = path.substr(1,slash-1); 
     const std::string rest_path = path.substr(slash);  
-    System::User user;
+    OksSystem::User user;
     if (! user_name.empty()) {
-	user = System::User(user_name);
+	user = OksSystem::User(user_name);
     } 
     return user.home() + rest_path;
 } // home_directory
@@ -202,7 +202,7 @@ std::string System::File::expand_home(const std::string path) {
 * \return a string containing the beautified permissions 
 */
 
-std::string System::File::pretty_permissions(mode_t permissions) {
+std::string OksSystem::File::pretty_permissions(mode_t permissions) {
     char buffer[11];
     buffer[0] = (permissions & S_ISUID) ? SETUID_CHAR_CODE : NOTHING_CHAR_CODE;
     buffer[1] = (permissions & S_IRUSR) ? READ_CHAR_CODE : NOTHING_CHAR_CODE;
@@ -218,13 +218,13 @@ std::string System::File::pretty_permissions(mode_t permissions) {
     return std::string(buffer); 
 } // pretty_permissions
 
-/** Builds a prettyfied version of flags used by the \c open System call
+/** Builds a prettyfied version of flags used by the \c open OksSystem call
 * \param flags as passed to \c open
 * \return a string containing the beautified flags
 * \note This method only handles flags available accross plateforms. 
 */
 
-std::string System::File::pretty_open_flag(int flags) {
+std::string OksSystem::File::pretty_open_flag(int flags) {
     std::ostringstream flag_str;
     if (flags & O_WRONLY) {
         flag_str << HUMAN_OPEN_STR[1];
@@ -253,7 +253,7 @@ std::string System::File::pretty_open_flag(int flags) {
 } // pretty_open_permission
 
 
-int  System::File::unit(int u) {
+int  OksSystem::File::unit(int u) {
     ERS_PRECONDITION(u >= 0);
     if (u==0) return 1;
     return KILOBYTE * unit(u-1);
@@ -268,7 +268,7 @@ int  System::File::unit(int u) {
 * \return a string containing the textual description
 */
 
-std::string System::File::pretty_size(size_t size, bool cut_small) {
+std::string OksSystem::File::pretty_size(size_t size, bool cut_small) {
     if (0==size) return "0";
     std::ostringstream size_str;
     bool writen_something = false;
@@ -293,7 +293,7 @@ std::string System::File::pretty_size(size_t size, bool cut_small) {
   * \note This method does not create a file, it simply builds an object describing a file 
   */
 
-System::File::File(const std::string &name) {
+OksSystem::File::File(const std::string &name) {
     set_name(name); 
 } // File
 
@@ -301,7 +301,7 @@ System::File::File(const std::string &name) {
   * \overload
   */
 
-System::File::File(const char* c_name) {
+OksSystem::File::File(const char* c_name) {
     ERS_PRECONDITION(c_name); 
     std::string name = std::string(c_name);
     set_name(name); 
@@ -311,7 +311,7 @@ System::File::File(const char* c_name) {
 * \overload
 */
 
-System::File::File(const File& other) {
+OksSystem::File::File(const File& other) {
     set_name(other.m_full_name);
 } // File
 
@@ -321,11 +321,11 @@ System::File::File(const File& other) {
 
 
 
-System::File::operator std::string() const throw() {
+OksSystem::File::operator std::string() const throw() {
     return m_full_name;
 } // operator std::string
 
-System::File::operator const char*() const throw() {
+OksSystem::File::operator const char*() const throw() {
     return m_full_name.c_str();
 } // operator const char*
 
@@ -333,7 +333,7 @@ System::File::operator const char*() const throw() {
   * \return \c true if the file exists 
   */
 
-System::File::operator bool() const throw() {
+OksSystem::File::operator bool() const throw() {
     return exists(); 
 } // operator bool
 
@@ -344,7 +344,7 @@ System::File::operator bool() const throw() {
   * \note This comparison method does not taken hard links into account 
   */
 
-bool System::File::equals(const File &other) const throw() {
+bool OksSystem::File::equals(const File &other) const throw() {
     return (m_full_name == other.m_full_name);
 } // operator==
 
@@ -353,7 +353,7 @@ bool System::File::equals(const File &other) const throw() {
   * \see size()
   */
 
-System::File::operator size_t() const {
+OksSystem::File::operator size_t() const {
     return size();
 } // operator size_t
 
@@ -377,7 +377,7 @@ System::File::operator size_t() const {
   * \param name the name of the file
   */
 
-void System::File::set_name(const std::string &name) {
+void OksSystem::File::set_name(const std::string &name) {
     ERS_PRECONDITION(! name.empty()); 
     const char c = name[0];
     std::string long_path;
@@ -403,20 +403,20 @@ void System::File::set_name(const std::string &name) {
 
 /** \return the full (absolute) path of the file */
 
-const std::string & System::File::full_name() const throw() {
+const std::string & OksSystem::File::full_name() const throw() {
     return m_full_name;
 } // full_name
 
 /** \return the full (absolute) path of the file */
 
-const char* System::File::c_full_name() const throw() {
+const char* OksSystem::File::c_full_name() const throw() {
     return m_full_name.c_str(); 
 } // c_full_name
 
 
 /** \return the short name of the file - that is the name of the file in its directory */
 
-std::string System::File::short_name() const throw() {
+std::string OksSystem::File::short_name() const throw() {
     return short_name(m_full_name);
 } // short_name
 
@@ -424,7 +424,7 @@ std::string System::File::short_name() const throw() {
   * \return the path of the directory containing the file 
   */
 
-std::string System::File::parent_name() const throw() {
+std::string OksSystem::File::parent_name() const throw() {
   std::string::size_type size = m_full_name.size();
   std::string::size_type slash = m_full_name.rfind(SLASH_CHAR,size-1);
   if (slash==std::string::npos || slash==0) return ("/"); 
@@ -433,43 +433,43 @@ std::string System::File::parent_name() const throw() {
 
 /** \return the extension of the file */
 
-std::string System::File::extension() const throw() {
+std::string OksSystem::File::extension() const throw() {
     return extension(m_full_name);
 } // extension
 
-int System::File::depth() const throw() {
+int OksSystem::File::depth() const throw() {
     return depth(m_full_name);
 } // depth
 
 /** \return the parent directory */
 
-System::File System::File::parent() const {
+OksSystem::File OksSystem::File::parent() const {
     return File(parent_name());
 } // parent
 
-System::File System::File::child(const std::string &name) const {
+OksSystem::File OksSystem::File::child(const std::string &name) const {
     std::string child_name = m_full_name + "/" + name;
-    return System::File(child_name);
+    return OksSystem::File(child_name);
 } // child
 
-System::File System::File::temporary(const std::string &prefix) const {
+OksSystem::File OksSystem::File::temporary(const std::string &prefix) const {
     char *tmp_name = tempnam(m_full_name.c_str(),prefix.c_str());
     if ( !tmp_name ) {
       std::string message = "while creating a valid filename in directory " + m_full_name;
-      throw System::SystemCallIssue( ERS_HERE, errno, "tempnam", message.c_str() );
+      throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "tempnam", message.c_str() );
     }
-    System::File tmp_file(tmp_name);
+    OksSystem::File tmp_file(tmp_name);
     free(tmp_name);
     return tmp_file;
 } // temporary
 
 
-/** Checks if the file exists in the fileSystem
+/** Checks if the file exists in the fileOksSystem
   * \return \c true if the file exists, false otherwise 
   * \exception ers::IOIssue if an error occurs 
   */
 
-bool System::File::exists() const throw() {
+bool OksSystem::File::exists() const throw() {
     struct stat file_status;
     const int result = stat(m_full_name.c_str(),&file_status);
     if (0==result) return true;
@@ -479,17 +479,17 @@ bool System::File::exists() const throw() {
 /** Extracts the mode information of the file. 
   * This is used to determine both the file type and the file permissions 
   * \return the mode of the file
-  * \exception System::FStatFail if fstat fails
+  * \exception OksSystem::FStatFail if fstat fails
   */
 
-mode_t System::File::get_mode() const {
+mode_t OksSystem::File::get_mode() const {
     struct stat file_status;
     const int result = stat(m_full_name.c_str(),&file_status);
     if (0==result) {
 	return file_status.st_mode;
     } // if
     std::string message = "on file/directory " + m_full_name;
-    throw System::SystemCallIssue( ERS_HERE, errno, "stat", message.c_str() );
+    throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "stat", message.c_str() );
 } // mode
 
 
@@ -497,7 +497,7 @@ mode_t System::File::get_mode() const {
   * \exception ers::IOIssue if an error occurs or the file does not exist 
   */
 
-mode_t System::File::permissions() const {
+mode_t OksSystem::File::permissions() const {
     mode_t mode = get_mode();
     return (mode & 07777);
 } // permissions
@@ -506,7 +506,7 @@ mode_t System::File::permissions() const {
   * \exception ers::IOIssue if an error occurs or the file does not exist 
   */
 
-std::string System::File::pretty_permissions() const {
+std::string OksSystem::File::pretty_permissions() const {
     return pretty_permissions(permissions()); 
 } // pretty_permissions
 
@@ -515,7 +515,7 @@ std::string System::File::pretty_permissions() const {
   * \return a string contaning the permissions in octal form
   */
 
-std::string System::File::to_string(mode_t permissions) throw() {
+std::string OksSystem::File::to_string(mode_t permissions) throw() {
     std::ostringstream stream;
     stream.setf(std::ios::oct,std::ios::basefield);
     stream << permissions;
@@ -524,30 +524,30 @@ std::string System::File::to_string(mode_t permissions) throw() {
 
 
 /** \return the size (in bytes) of the file
-  * \exception System::IOIssue if an error occurs or the file does not exist 
+  * \exception OksSystem::IOIssue if an error occurs or the file does not exist 
   */
 
-size_t System::File::size() const {
+size_t OksSystem::File::size() const {
     struct stat file_status;
     const int result = stat(m_full_name.c_str(),&file_status);
     if (0==result) return file_status.st_size;
     std::string message = "on file/directory " + m_full_name;
-    throw System::SystemCallIssue( ERS_HERE, errno, "stat", message.c_str() );
+    throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "stat", message.c_str() );
 } // size 
 
 /** \return the user-id of the owner of the file
-  * \exception System::IOIssue if an error occurs or the file does not exist 
+  * \exception OksSystem::IOIssue if an error occurs or the file does not exist 
   */
 
-uid_t System::File::owner_id() const {
+uid_t OksSystem::File::owner_id() const {
     struct stat file_status;
     const int result = stat(m_full_name.c_str(),&file_status);
     if (0==result) return file_status.st_uid;
     std::string message = "on file/directory " + m_full_name;
-    throw System::SystemCallIssue( ERS_HERE, errno, "stat", message.c_str() );
+    throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "stat", message.c_str() );
 } // owner_id
 
-System::User System::File::owner() const {
+OksSystem::User OksSystem::File::owner() const {
     return User(owner_id());
 } // owner
 
@@ -556,12 +556,12 @@ System::User System::File::owner() const {
   * \exception ers::IOIssue if an error occurs or the file does not exist 
   */
 
-gid_t System::File::group() const {
+gid_t OksSystem::File::group() const {
     struct stat file_status;
     const int result = stat(m_full_name.c_str(),&file_status);
     if (0==result) return file_status.st_gid;
     std::string message = "on file/directory " + m_full_name;
-    throw System::SystemCallIssue( ERS_HERE, errno, "stat", message.c_str() );
+    throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "stat", message.c_str() );
 } // owner
 
 
@@ -570,7 +570,7 @@ gid_t System::File::group() const {
   * \exception ers::IOIssue if an error occurs or the file does not exist 
   */
 
-bool System::File::is_regular() const {
+bool OksSystem::File::is_regular() const {
     const mode_t mode = get_mode();
     return (mode & S_IFREG);
 } // is_regular
@@ -581,7 +581,7 @@ bool System::File::is_regular() const {
  * \exception ers::IOIssue if an error occurs or the file does not exist 
  */
 
-bool System::File::is_directory() const {
+bool OksSystem::File::is_directory() const {
     const mode_t mode = get_mode();
     return (mode & S_IFDIR);
 } // is_regular
@@ -591,15 +591,15 @@ bool System::File::is_directory() const {
  * \exception ers::IOIssue if an error occurs or the file does not exist 
  */
 
-bool System::File::is_fifo() const {
+bool OksSystem::File::is_fifo() const {
     const mode_t mode = get_mode();
     return (mode & S_IFIFO);
 } // is_pipe
 
 
-std::string System::File::file_type() const {
-    System::Executable file_command(FILE_COMMAND_PATH); 
-    System::Executable::param_collection params;
+std::string OksSystem::File::file_type() const {
+    OksSystem::Executable file_command(FILE_COMMAND_PATH); 
+    OksSystem::Executable::param_collection params;
     params.push_back("-b"); 
     params.push_back(full_name()); 
     return first_line(file_command.pipe_in(params)); 
@@ -607,16 +607,16 @@ std::string System::File::file_type() const {
     
 /** Builds a vector containing all the files contained in a directory 
   * \return a vector of files contained in the directory 
-  * \exception System::OpenFail if the directory could not be openend
-  * \exception System::CloseFail if the directory cannot be closed 
+  * \exception OksSystem::OpenFail if the directory could not be openend
+  * \exception OksSystem::CloseFail if the directory cannot be closed 
   */
 
-System::File::file_list_t System::File::directory() const {
+OksSystem::File::file_list_t OksSystem::File::directory() const {
     file_list_t file_vector;
     DIR* directory_ptr = opendir(m_full_name.c_str());
     if (! directory_ptr) {
       std::string message = "on directory " + m_full_name;
-      throw System::SystemCallIssue( ERS_HERE, errno, "opendir", message.c_str() );
+      throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "opendir", message.c_str() );
     }
     while(true) {
 	struct dirent* directory_entry = readdir(directory_ptr); 
@@ -624,7 +624,7 @@ System::File::file_list_t System::File::directory() const {
 	    const std::string name = directory_entry->d_name;
 	    if ((name!=".") && (name!="..")) {
 		std::string path = m_full_name + "/" + name;
-		System::File file(path); 
+		OksSystem::File file(path); 
 		file_vector.push_back(file);
 	    } // if
 	} else {
@@ -634,7 +634,7 @@ System::File::file_list_t System::File::directory() const {
     int status = closedir(directory_ptr);
     if (status<0) {
       std::string message = "on directory " + m_full_name;
-      throw System::SystemCallIssue( ERS_HERE, errno, "closedir", message.c_str() );
+      throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "closedir", message.c_str() );
     }
     return file_vector;
 } // directory
@@ -643,26 +643,26 @@ System::File::file_list_t System::File::directory() const {
   * \exception ers::IOIssue if an error occurs or the file does not exist 
   */
 
-void System::File::unlink() const {
+void OksSystem::File::unlink() const {
     const int result = ::unlink(m_full_name.c_str());
     if (0==result) return;
-    throw System::RemoveFileIssue( ERS_HERE, errno, m_full_name.c_str() ); 
+    throw OksSystem::RemoveFileIssue( ERS_HERE, errno, m_full_name.c_str() ); 
 } //unlink
 
-void System::File::rmdir() const {
+void OksSystem::File::rmdir() const {
     const int result = ::rmdir(m_full_name.c_str());
     if (0==result) return;
     std::string message = "on directory " + m_full_name;
-    throw System::SystemCallIssue( ERS_HERE, errno, "rmdir", message.c_str() ); 
+    throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "rmdir", message.c_str() ); 
 } // rmdir
 
 
 /** Recursively delete files and directories.
   * If the file is a directory, all its child are deleted recursively. 
-  * \exception System::UnlinkFail if \c unlink fails 
+  * \exception OksSystem::UnlinkFail if \c unlink fails 
   */
 
-void System::File::remove() const {
+void OksSystem::File::remove() const {
     if (is_directory()) {
 	file_list_t childs = directory(); 
 	for (file_list_t::const_iterator p=childs.begin();p!=childs.end();p++) {
@@ -683,12 +683,12 @@ void System::File::remove() const {
   * \exception ers::IOIssue if an error occurs or the file does not exist 
   */
 
-void System::File::rename(const File &other) const {
+void OksSystem::File::rename(const File &other) const {
     const char *source = c_full_name() ;
     const char *dest = other.c_full_name();
     const int result = ::rename(source,dest); 
     if (0==result) return;
-    throw System::RenameFileIssue( ERS_HERE, errno, source, dest );
+    throw OksSystem::RenameFileIssue( ERS_HERE, errno, source, dest );
 } // rename
 
 /** Sets the permissions of the file 
@@ -696,14 +696,14 @@ void System::File::rename(const File &other) const {
   * \exception ers::IOIssue if an error occurs or the file does not exist 
   */
  
-void System::File::permissions(mode_t perm) const {
+void OksSystem::File::permissions(mode_t perm) const {
   if(perm !=  permissions()) {
     const int result = ::chmod(m_full_name.c_str(),perm); 
     if (0==result) {
       return;
     }
     std::string message = "on file/directory " + m_full_name;
-    throw System::SystemCallIssue( ERS_HERE, errno, "chmod", message.c_str());
+    throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "chmod", message.c_str());
   }
 } // permissions
 
@@ -714,7 +714,7 @@ void System::File::permissions(mode_t perm) const {
   * to match the permissions
   */ 
 
-void System::File::make_dir(mode_t perm) const {
+void OksSystem::File::make_dir(mode_t perm) const {
 
     errno = 0;
     const int result = ::mkdir(m_full_name.c_str(),perm);
@@ -724,9 +724,9 @@ void System::File::make_dir(mode_t perm) const {
       try {
 	permissions(perm);
       }
-      catch (System::SystemCallIssue &e){
+      catch (OksSystem::OksSystemCallIssue &e){
 	std::string message = "on directory " + m_full_name;
-	throw System::SystemCallIssue( ERS_HERE, errno, "mkdir -> chmod", message.c_str() ); 
+	throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "mkdir -> chmod", message.c_str() ); 
       }
       return;
     } else {
@@ -735,14 +735,14 @@ void System::File::make_dir(mode_t perm) const {
 	  try {
 	    permissions(perm);
 	  }
-	  catch (System::SystemCallIssue &e){
+	  catch (OksSystem::OksSystemCallIssue &e){
 	    // ignore this case...
 	  }
 	  return;
 	} // is directory
       } else { // exists
 	std::string message = "on directory " + m_full_name;
-	throw System::SystemCallIssue(ERS_HERE, mkdir_error, "mkdir", message.c_str()); 
+	throw OksSystem::OksSystemCallIssue(ERS_HERE, mkdir_error, "mkdir", message.c_str()); 
       }
     }
     
@@ -758,7 +758,7 @@ void System::File::make_dir(mode_t perm) const {
   *       we create. 
   */
 
-void System::File::make_path(mode_t perm) const { 
+void OksSystem::File::make_path(mode_t perm) const { 
     const File father = parent(); 
     if (! father.exists()) {
 	mode_t father_permission = perm | S_IRWXU;// we need rights to write sons
@@ -770,10 +770,10 @@ void System::File::make_path(mode_t perm) const {
 /** Makes sure that the path for a file exists 
   * This is done by calling \c make_path on the parent directory 
   * \param permissions permissions used to create directories
-  * \see System::File::make_path()
+  * \see OksSystem::File::make_path()
   */
 
-void  System::File::ensure_path(mode_t perm) const {
+void  OksSystem::File::ensure_path(mode_t perm) const {
     const File father = parent();
     father.make_path(perm); 
 } // ensure_path
@@ -783,7 +783,7 @@ void  System::File::ensure_path(mode_t perm) const {
   * \param perm the permission to give the pipe
   */
 
-void System::File::make_fifo(mode_t perm) const {
+void OksSystem::File::make_fifo(mode_t perm) const {
     if (exists()) {
 	if (is_fifo()) {
 	  if(perm != permissions()) {
@@ -800,7 +800,7 @@ void System::File::make_fifo(mode_t perm) const {
       return;
     } 
     std::string message = "while creating FIFO " + m_full_name;
-    throw System::SystemCallIssue( ERS_HERE, errno, "mkfifo", message.c_str() ); 
+    throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "mkfifo", message.c_str() ); 
 } // makefifo
     
 
@@ -812,13 +812,13 @@ void System::File::make_fifo(mode_t perm) const {
   * \exception ers::IOIssue if an error occurs or the file does not exist 
   */
 
-std::istream* System::File::input() const {
+std::istream* OksSystem::File::input() const {
     try {
 	std::ifstream *stream = new std::ifstream(m_full_name.c_str());
 	stream->exceptions(std::ios::failbit | std::ios::badbit); 
 	return stream;
     } catch (std::ios_base::failure &ex) {
-	throw System::OpenFileIssue( ERS_HERE, errno, m_full_name.c_str(), ex ); 
+	throw OksSystem::OpenFileIssue( ERS_HERE, errno, m_full_name.c_str(), ex ); 
     } // catch
 } // std::istream*
 
@@ -829,7 +829,7 @@ std::istream* System::File::input() const {
  * \exception ers::IOIssue if an error occurs
  */
     
-std::ostream* System::File::output(bool append) const {
+std::ostream* OksSystem::File::output(bool append) const {
     try {
 	std::ios::openmode mode = std::ios::out;
 	if (append) {
@@ -839,7 +839,7 @@ std::ostream* System::File::output(bool append) const {
 	stream->exceptions(std::ios::failbit | std::ios::badbit); 
 	return stream;
     } catch (std::ios_base::failure &ex) {
-	throw System::OpenFileIssue( ERS_HERE, errno, m_full_name.c_str(), ex ); 
+	throw OksSystem::OpenFileIssue( ERS_HERE, errno, m_full_name.c_str(), ex ); 
     } // catch
 } // std::ostream*
 
@@ -849,16 +849,16 @@ std::ostream* System::File::output(bool append) const {
   * \return the stream passed as parameter
   */
 
-std::ostream& operator<<(std::ostream& stream, const System::File& file) {
-    stream << System::File::FILE_PROTOCOL << ":/" << file.full_name();
+std::ostream& operator<<(std::ostream& stream, const OksSystem::File& file) {
+    stream << OksSystem::File::FILE_PROTOCOL << ":/" << file.full_name();
     return stream;
 } // operator<<
 
-bool operator ==(const System::File &a, const System::File &b)  throw() {
+bool operator ==(const OksSystem::File &a, const OksSystem::File &b)  throw() {
     return a.equals(b); 
 } // operator ==
 
-bool operator !=(const System::File &a, const System::File &b)  throw() {
+bool operator !=(const OksSystem::File &a, const OksSystem::File &b)  throw() {
     return ! a.equals(b); 
 } // operator !=
 

@@ -6,7 +6,7 @@
  *
  */
 
-void test_system(const char* path, const char *text) ; 
+void test_okssystem(const char* path, const char *text) ; 
 void test_exec(const char* path) ; 
 void test_map_file(const char* path) ; 
 void test_delete_file(const char* path) ; 

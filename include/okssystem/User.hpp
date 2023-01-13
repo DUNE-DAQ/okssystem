@@ -1,20 +1,20 @@
 /*
  *  User.h
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 03.02.05.
  *  Copyright 2005 CERN. All rights reserved.
  *
  */
 
-#ifndef SYSTEM_USER
-#define SYSTEM_USER
+#ifndef OKSSYSTEM_USER
+#define OKSSYSTEM_USER
 
 #include <unistd.h>
 #include <sys/types.h>
 #include <string>
 
-namespace System {
+namespace OksSystem {
     
     /** This class represents an user 
       * \brief User
@@ -48,13 +48,13 @@ public:
 	void setuid() const ;                              ///< \brief tries to set the uid of current process 
     }; // User
     
-}  // System 
+}  // OksSystem 
 
-std::ostream& operator<<(std::ostream& stream, const System::User& user) throw() ; 
+std::ostream& operator<<(std::ostream& stream, const OksSystem::User& user) throw() ; 
 
 
-bool operator ==(const System::User &a, const System::User &b)  throw();
-bool operator !=(const System::User &a, const System::User &b)  throw();
+bool operator ==(const OksSystem::User &a, const OksSystem::User &b)  throw();
+bool operator !=(const OksSystem::User &a, const OksSystem::User &b)  throw();
 
 
 #endif

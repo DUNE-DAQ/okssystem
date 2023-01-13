@@ -1,6 +1,6 @@
 /*
  *  Host.cxx
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 03.02.05.
  *  Copyright 2005 CERN. All rights reserved.
@@ -19,7 +19,7 @@
 #include <sstream>
 #include <strings.h>
 
-#include "system/Host.hpp"
+#include "okssystem/Host.hpp"
 
 #define BUFFER_SIZE 256 
 
@@ -29,7 +29,7 @@
   * \note only returns the first ip address associated with name 
   */
 
-struct sockaddr_in System::Host::resolve(const std::string &name) throw() {
+struct sockaddr_in OksSystem::Host::resolve(const std::string &name) throw() {
     struct addrinfo *info_ptr;
     const char *str = name.c_str(); 
     const int status = getaddrinfo(str,0,0,&info_ptr); 
@@ -50,7 +50,7 @@ struct sockaddr_in System::Host::resolve(const std::string &name) throw() {
   * \return the hostname an empty string if the hostname could not be resolved 
   */
 
-std::string System::Host::resolve(struct sockaddr_in address) throw() {
+std::string OksSystem::Host::resolve(struct sockaddr_in address) throw() {
     char buffer[NI_MAXHOST];
     const struct sockaddr *ptr = (const struct sockaddr *) &address;
     const int status= getnameinfo(ptr,sizeof(address),buffer,sizeof(buffer),0,0,0);
@@ -66,7 +66,7 @@ std::string System::Host::resolve(struct sockaddr_in address) throw() {
   * \return fullname 
   */
 
-std::string System::Host::expand(const std::string &name) throw() {
+std::string OksSystem::Host::expand(const std::string &name) throw() {
     const struct sockaddr_in address = resolve(name); 
     if (address.sin_addr.s_addr!=0) return resolve(address); 
     return std::string(name) ;
@@ -78,7 +78,7 @@ std::string System::Host::expand(const std::string &name) throw() {
 * \note Should use addr2ascii
 */
 
-std::string System::Host::to_string(struct sockaddr_in ip_addr) {
+std::string OksSystem::Host::to_string(struct sockaddr_in ip_addr) {
     const char* s = inet_ntoa(ip_addr.sin_addr);
     return std::string(s);
 } // to_string
@@ -89,9 +89,9 @@ std::string System::Host::to_string(struct sockaddr_in ip_addr) {
 /** Constructors for the local host
   */
 
-System::Host::Host() throw() {} // Host
+OksSystem::Host::Host() throw() {} // Host
 
-System::Host::Host(const System::Host &other) {
+OksSystem::Host::Host(const OksSystem::Host &other) {
     m_name = other.m_name;
     if (! other.m_full_name.empty()) {
 	m_full_name = other.m_full_name;
@@ -103,19 +103,19 @@ System::Host::Host(const System::Host &other) {
   * \param name name of the host
   */
 
-System::Host::Host(const std::string &s_name) {
+OksSystem::Host::Host(const std::string &s_name) {
     m_name = s_name;
 } // Host
 
 
-System::Host::Host(struct sockaddr_in ip_addr) {
+OksSystem::Host::Host(struct sockaddr_in ip_addr) {
     m_name = resolve(ip_addr);
     m_full_name = m_name;
 } // Host
 
 
-System::Host::~Host() throw() {
-} // System
+OksSystem::Host::~Host() throw() {
+} // OksSystem
 
 // Operator
 // --------------------------
@@ -124,7 +124,7 @@ System::Host::~Host() throw() {
   * \return ip address 
   */
 
-System::Host::operator struct sockaddr_in() const throw() {
+OksSystem::Host::operator struct sockaddr_in() const throw() {
     return ip(); 
 } // struct sockaddr_in
 
@@ -134,7 +134,7 @@ System::Host::operator struct sockaddr_in() const throw() {
  * \return \c true if both have the same fully qualified name 
  */
 
-bool System::Host::equals(const Host &other) const throw() {
+bool OksSystem::Host::equals(const Host &other) const throw() {
     return full_name()==other.full_name();
 } // equals
 
@@ -146,19 +146,19 @@ bool System::Host::equals(const Host &other) const throw() {
   * \return name of the host
   */
 
-const std::string & System::Host::name() const throw() { return m_name;} 
+const std::string & OksSystem::Host::name() const throw() { return m_name;} 
 
 /** IP address of the host 
   * \return IP address of the host, or 0.0.0.0 if it cannot be resolved
   */
 
-struct sockaddr_in System::Host::ip() const throw() { return resolve(m_name);}
+struct sockaddr_in OksSystem::Host::ip() const throw() { return resolve(m_name);}
 
 /** Fully qualified name of the host
   * \return Fully qualified name of the host, or the string \"0.0.0.0\"
   */
 
-const std::string & System::Host::full_name() const throw() {
+const std::string & OksSystem::Host::full_name() const throw() {
     if (m_full_name.empty()) {
 	m_full_name = expand(m_name); 
     }  // if
@@ -169,18 +169,18 @@ const std::string & System::Host::full_name() const throw() {
   * \return a string containing the IP address of the host in w.x.y.z format 
   */
 
-std::string System::Host::ip_string() const throw() {
+std::string OksSystem::Host::ip_string() const throw() {
     const struct sockaddr_in address = ip(); 
     return to_string(address);
 } // ip_string
 
 
 
-bool System::operator ==(const Host &a, const Host &b)  throw() {
+bool OksSystem::operator ==(const Host &a, const Host &b)  throw() {
     return a.equals(b); 
 } // operator ==
 
-bool System::operator !=(const Host &a, const Host &b) throw() {
+bool OksSystem::operator !=(const Host &a, const Host &b) throw() {
     return ! a.equals(b);
 } // operator ≠
 
@@ -191,24 +191,24 @@ bool System::operator !=(const Host &a, const Host &b) throw() {
   * \brief LocalHost singleton
   */
 
-System::LocalHost* System::LocalHost::s_instance = 0;
+OksSystem::LocalHost* OksSystem::LocalHost::s_instance = 0;
 
 /** Short-cut method - gives the local hostname
  * This name is not guaranteed to be a fully qualified name.
  * \return hostname 
- * \see System::LocalHost::name()
+ * \see OksSystem::LocalHost::name()
  */
 
-const std::string & System::LocalHost::local_name() throw() {
+const std::string & OksSystem::LocalHost::local_name() throw() {
     return instance()->name(); 
 } // localhostname
 
 /** Short-cut method - gives the fully qualified local hostname 
  * \return fully qualified hostname
- * \see System::LocalHost::full_name()
+ * \see OksSystem::LocalHost::full_name()
  */
 
-const std::string & System::LocalHost::full_local_name() throw() {
+const std::string & OksSystem::LocalHost::full_local_name() throw() {
     return instance()->full_name(); 
 } // fulllocalhostname
 
@@ -218,7 +218,7 @@ const std::string & System::LocalHost::full_local_name() throw() {
   * \note utility methods like \c full_local_name use this instance class 
   */
 
-const System::LocalHost* System::LocalHost::instance() throw() {
+const OksSystem::LocalHost* OksSystem::LocalHost::instance() throw() {
     if (0==s_instance) {
 	s_instance = new LocalHost(); 
     } // 
@@ -230,7 +230,7 @@ const System::LocalHost* System::LocalHost::instance() throw() {
   * singleton instance. 
   */
  
-System::LocalHost::LocalHost() throw() : Host() {
+OksSystem::LocalHost::LocalHost() throw() : Host() {
     struct utsname u_name_data;
     const int status = ::uname(&u_name_data);
     if (status==0) { 
@@ -250,31 +250,31 @@ System::LocalHost::LocalHost() throw() : Host() {
     } // uname failed. 
 } // LocalHost
 
-System::LocalHost::~LocalHost() throw() {
+OksSystem::LocalHost::~LocalHost() throw() {
   //  delete s_instance;
 }
 
-/** \return Operating System name */
+/** \return Operating OksSystem name */
 
-const std::string & System::LocalHost::os_name() const throw() {
+const std::string & OksSystem::LocalHost::os_name() const throw() {
     return m_os_name;
 } // os_name
 
-/** \return Operating System release */
+/** \return Operating OksSystem release */
 
-const std::string & System::LocalHost::os_release() const throw() {
+const std::string & OksSystem::LocalHost::os_release() const throw() {
     return m_release;
 } // os_release
 
-/** \return Operating System version */
+/** \return Operating OksSystem version */
 
-const std::string & System::LocalHost::os_version() const throw() {
+const std::string & OksSystem::LocalHost::os_version() const throw() {
     return m_version;
 } // os_version
 
 /** \return machine name */
 
-const std::string & System::LocalHost::machine() const throw() {
+const std::string & OksSystem::LocalHost::machine() const throw() {
     return m_machine;
 } // machine
 
@@ -283,7 +283,7 @@ const std::string & System::LocalHost::machine() const throw() {
   * \return description text
   */
 
-const std::string & System::LocalHost::description() const throw() {
+const std::string & OksSystem::LocalHost::description() const throw() {
     if (m_description.empty()) {
 	std::ostringstream stream;
 	stream << m_os_name << " " << m_release << "/" << m_machine;
@@ -299,8 +299,8 @@ const std::string & System::LocalHost::description() const throw() {
   *       the short (unqualified) host name. 
   */
 
-const char* System::getfullhost() throw() {
-    const std::string & str = System::LocalHost::full_local_name();
+const char* OksSystem::getfullhost() throw() {
+    const std::string & str = OksSystem::LocalHost::full_local_name();
     return str.c_str(); 
 } // full_host_name
 
@@ -310,7 +310,7 @@ const char* System::getfullhost() throw() {
   * \param b second instance
   */
 
-bool System::operator ==(const LocalHost &, const LocalHost & ) throw()
+bool OksSystem::operator ==(const LocalHost &, const LocalHost & ) throw()
 {
     return true;
 }
@@ -321,12 +321,12 @@ bool System::operator ==(const LocalHost &, const LocalHost & ) throw()
  * \param b second instance
  */
 
-bool System::operator !=(const LocalHost &, const LocalHost & ) throw()
+bool OksSystem::operator !=(const LocalHost &, const LocalHost & ) throw()
 {
     return false;
 }
 
-std::ostream& operator<<(std::ostream& stream, const System::Host& host) {
+std::ostream& operator<<(std::ostream& stream, const OksSystem::Host& host) {
     stream << host.full_name();  
     return stream;
 } // operator<<

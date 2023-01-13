@@ -7,14 +7,14 @@
  *
  */
 
-#ifndef SYSTEM_DESCRIPTOR
-#define SYSTEM_DESCRIPTOR
+#ifndef OKSSYSTEM_DESCRIPTOR
+#define OKSSYSTEM_DESCRIPTOR
 
 #include <string>
 #include <sys/types.h>
 #include <sys/stat.h>
 
-namespace System { 
+namespace OksSystem { 
 
   class File;
   
@@ -58,7 +58,7 @@ namespace System {
     
   };// Descriptor
   
-} // System
+} // OksSystem
 
 #endif
 

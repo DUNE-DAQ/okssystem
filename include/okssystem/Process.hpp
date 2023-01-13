@@ -1,19 +1,19 @@
 /*
  *  Process.h
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 18.01.05.
  *  Copyright 2005 CERN. All rights reserved.
  *
  */
 
-#ifndef SYSTEM_PROCESS
-#define SYSTEM_PROCESS
+#ifndef OKSSYSTEM_PROCESS
+#define OKSSYSTEM_PROCESS
 
 #include <sys/types.h>
 #include <string>
 
-namespace System {
+namespace OksSystem {
     
     /** This class represents a process 
       * It offers basic methods to manipulate a process
@@ -54,10 +54,10 @@ public:
 	std::string to_string() const throw();               ///< \brief String conversion method 
     } ; // Process
     
-} // System
+} // OksSystem
 
-std::ostream& operator<<(std::ostream& stream, const System::Process &proc) ;        ///< \brief STL stream operator */
-bool operator ==(const System::Process &a, const System::Process &b)  throw(); 
-bool operator !=(const System::Process &a, const System::Process &b)  throw(); 
+std::ostream& operator<<(std::ostream& stream, const OksSystem::Process &proc) ;        ///< \brief STL stream operator */
+bool operator ==(const OksSystem::Process &a, const OksSystem::Process &b)  throw(); 
+bool operator !=(const OksSystem::Process &a, const OksSystem::Process &b)  throw(); 
 
 #endif

@@ -9,21 +9,21 @@
 #include <sstream>
 #include <iostream>
 
-#include "system/Path.hpp"
-#include "system/exceptions.hpp"
+#include "okssystem/Path.hpp"
+#include "okssystem/exceptions.hpp"
 
-const char System::Path::PATH_SEPARATOR = ':';
+const char OksSystem::Path::PATH_SEPARATOR = ':';
 
 /** Empty constructor
   */
 
-System::Path::Path() {} 
+OksSystem::Path::Path() {} 
 
 /** Copy constructor
   * \param other the original object
   */
 
-System::Path::Path(const Path& other) {
+OksSystem::Path::Path(const Path& other) {
     m_directories = other.m_directories;
 }
 
@@ -31,11 +31,11 @@ System::Path::Path(const Path& other) {
   * \param path_list string containing the list of directories
   */
 
-System::Path::Path(const std::string &path_list) {
+OksSystem::Path::Path(const std::string &path_list) {
     parse_path_list(path_list); 
 } // Path
 
-System::Path::operator std::string() const {
+OksSystem::Path::operator std::string() const {
     return to_string(); 
 } // operator std::string()
 
@@ -45,7 +45,7 @@ System::Path::operator std::string() const {
   * \param dir the file to add
   */
 
-void System::Path::add(const System::File &dir) {
+void OksSystem::Path::add(const OksSystem::File &dir) {
     m_directories.push_back(dir); 
 } // add
 
@@ -54,7 +54,7 @@ void System::Path::add(const System::File &dir) {
   * \param path_list the path
   */
 
-void System::Path::parse_path_list(const std::string &path_list)  {
+void OksSystem::Path::parse_path_list(const std::string &path_list)  {
     std::string rest = path_list;
     while(! rest.empty()) {
 	std::string::size_type semi_colon = rest.find(PATH_SEPARATOR);
@@ -69,7 +69,7 @@ void System::Path::parse_path_list(const std::string &path_list)  {
 	}
 
 	if(!name.empty()) {
-	  const System::File directory(name); 
+	  const OksSystem::File directory(name); 
 	  add(directory);
 	}
     } // while
@@ -79,7 +79,7 @@ void System::Path::parse_path_list(const std::string &path_list)  {
   * \param stream destination stream
   */
 
-void System::Path::write_to(std::ostream &stream) const {
+void OksSystem::Path::write_to(std::ostream &stream) const {
     bool first = true;
     for(File::file_list_t::const_iterator pos = m_directories.begin(); pos!=m_directories.end();pos++) {
 	if (!first) {
@@ -96,7 +96,7 @@ void System::Path::write_to(std::ostream &stream) const {
   * \see write_to()
   */
 
-std::string System::Path::to_string() const {
+std::string OksSystem::Path::to_string() const {
     std::ostringstream stream;
     write_to(stream);
     return stream.str(); 
@@ -108,12 +108,12 @@ std::string System::Path::to_string() const {
   * \exception EntityNotFoundIssue if no matching file is found
   */
 
-System::File System::Path::which(const std::string &name) const {
+OksSystem::File OksSystem::Path::which(const std::string &name) const {
     for(File::file_list_t::const_iterator pos = m_directories.begin(); pos!=m_directories.end();pos++) {
 	File child = pos->child(name);
 	if (child.exists()) return child;
     } // for
-    throw System::NotFoundIssue( ERS_HERE, name.c_str() ); 
+    throw OksSystem::NotFoundIssue( ERS_HERE, name.c_str() ); 
 } // which 
 
 /** STL output operator
@@ -121,7 +121,7 @@ System::File System::Path::which(const std::string &name) const {
   * \param path the path to print
   */
 
-std::ostream& operator<<(std::ostream& stream, const System::Path& path) {
+std::ostream& operator<<(std::ostream& stream, const OksSystem::Path& path) {
     path.write_to(stream);
     return stream;
 } // operator<<

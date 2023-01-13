@@ -1,6 +1,6 @@
 /*
  *  Process.cxx
- *  System 
+ *  OksSystem 
  *
  *  Created by Matthias Wiesmann on 18.01.05.
  *  Copyright 2005 CERN. All rights reserved.
@@ -17,21 +17,21 @@
 
 #include "ers/ers.hpp"
 
-#include "system/exceptions.hpp"
-#include "system/Process.hpp"
+#include "okssystem/exceptions.hpp"
+#include "okssystem/Process.hpp"
 
 
-const int System::Process::TEST_BASE_VALUE = 182;/**< Lowest value for test manager result code  */
-const int System::Process::TEST_MAX_VALUE = 186; /**< Highest value for test manager result code */
+const int OksSystem::Process::TEST_BASE_VALUE = 182;/**< Lowest value for test manager result code  */
+const int OksSystem::Process::TEST_MAX_VALUE = 186; /**< Highest value for test manager result code */
 
-const int System::Process::TERMINATION_WAIT = 100000; /**< Wait time before deciding a termination signal did not work (in nanoseconds) */
+const int OksSystem::Process::TERMINATION_WAIT = 100000; /**< Wait time before deciding a termination signal did not work (in nanoseconds) */
 
-const char * const System::Process::SYS_EXITS_NAMES[] = { "command line usage error", "data format error", "cannot open input", "addressee unknown", "host name unknown", "service unavailable", "internal software error", "system error", 
+const char * const OksSystem::Process::SYS_EXITS_NAMES[] = { "command line usage error", "data format error", "cannot open input", "addressee unknown", "host name unknown", "service unavailable", "internal software error", "okssystem error", 
     "critical OS file missing", "can't create (user) output file", "input/output error", "temp failure; user is invited to retry", "remote error in protocol", "permission denied ", "configuration error" };
-const char * const System::Process::TEST_EXITS_NAMES[] = { "undefined test", "test failed", "test unresolved", "test untested", "unsupported test" };
-const char * const System::Process::OK_EXIT_NAME = "ok";
+const char * const OksSystem::Process::TEST_EXITS_NAMES[] = { "undefined test", "test failed", "test unresolved", "test untested", "unsupported test" };
+const char * const OksSystem::Process::OK_EXIT_NAME = "ok";
 
-System::Process *System::Process::s_instance = 0;
+OksSystem::Process *OksSystem::Process::s_instance = 0;
 
 /** Gives textual representation of exit values. 
   * This method recognises return codes from \c sysexits and the values returned by the text-manager 
@@ -39,7 +39,7 @@ System::Process *System::Process::s_instance = 0;
   * \return a pointer to the string desribing the code, or a null pointer if the code is not recognised
   */
 
-const char* System::Process::exit_text(int return_value) {
+const char* OksSystem::Process::exit_text(int return_value) {
     if ( 0==return_value) return OK_EXIT_NAME;
     if ((return_value >= EX__BASE)  && (return_value <= EX__MAX)) return SYS_EXITS_NAMES[return_value-EX__BASE];
     if ((return_value >= TEST_BASE_VALUE) && (return_value <= TEST_MAX_VALUE)) return TEST_EXITS_NAMES[return_value-TEST_BASE_VALUE];
@@ -52,9 +52,9 @@ const char* System::Process::exit_text(int return_value) {
   *         if not, the \c return_value converter into a string 
   */
 
-std::string System::Process::exit_pretty(int return_value) {
+std::string OksSystem::Process::exit_pretty(int return_value) {
     std::ostringstream stream;
-    const char* text = System::Process::exit_text(return_value);
+    const char* text = OksSystem::Process::exit_text(return_value);
     if (text) {
 	stream << text << '(' << return_value << ')';
     } else {
@@ -69,9 +69,9 @@ std::string System::Process::exit_pretty(int return_value) {
   * \return singleton instance for current process
   */
 
-const System::Process *System::Process::instance() throw() {
+const OksSystem::Process *OksSystem::Process::instance() throw() {
     if (0==s_instance) {
-	s_instance = new System::Process(); 
+	s_instance = new OksSystem::Process(); 
     } // if
     return s_instance;
 } // instance
@@ -80,7 +80,7 @@ const System::Process *System::Process::instance() throw() {
 /** Sets the process name of the current process 
   */
 
-void System::Process::set_name(const std::string &name) throw() {
+void OksSystem::Process::set_name(const std::string &name) throw() {
     (void) instance();
     s_instance->m_process_name = name;
 } // set_name
@@ -90,7 +90,7 @@ void System::Process::set_name(const std::string &name) throw() {
  *  For the current process, the singleton factory method \c instance should be used 
  */
 
-System::Process::Process() {
+OksSystem::Process::Process() {
     m_process_id = ::getpid();
 } // Process
 
@@ -98,7 +98,7 @@ System::Process::Process() {
   * \param other original instance 
   */
 
-System::Process::Process(const Process &other) {
+OksSystem::Process::Process(const Process &other) {
     m_process_id = other.m_process_id;
     m_process_name = other.m_process_name;
 } // Process
@@ -107,7 +107,7 @@ System::Process::Process(const Process &other) {
   * \param id pid of the process
   */
 
-System::Process::Process(pid_t id){
+OksSystem::Process::Process(pid_t id){
     m_process_id = id;
 } // Process 
 
@@ -116,7 +116,7 @@ System::Process::Process(pid_t id){
   * \param name display name of the process 
   */
 
-System::Process::Process(pid_t id, const std::string &name) {
+OksSystem::Process::Process(pid_t id, const std::string &name) {
     m_process_id = id;
     m_process_name = name;
 } 
@@ -125,14 +125,14 @@ System::Process::Process(pid_t id, const std::string &name) {
 /** Destructor 
   */
 
-System::Process::~Process() throw() {
+OksSystem::Process::~Process() throw() {
     m_process_id = 0;
 } // ~Process
 
 /** Cast operator - converts to process-id 
   */
 
-System::Process::operator pid_t() const throw() {
+OksSystem::Process::operator pid_t() const throw() {
     return m_process_id;
 } // operator pid_t
 
@@ -143,22 +143,22 @@ System::Process::operator pid_t() const throw() {
   * \return the termination status of the process 
   */
 
-int System::Process::join(bool throw_non_zero) const {
+int OksSystem::Process::join(bool throw_non_zero) const {
     ERS_PRECONDITION(! equals(*instance())); 
     int status;
     errno = 0;
     pid_t pid = ::waitpid(m_process_id,&status,0); 
     if (pid!=m_process_id) {
         std::string message = "on process " + this->to_string();
-	throw System::SystemCallIssue( ERS_HERE, errno, "waitpid", message.c_str() ); 
+	throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "waitpid", message.c_str() ); 
     } // if 
     if (WIFEXITED(status)) {
 	int exit_status = WEXITSTATUS(status);
 	if ((throw_non_zero==false) || (exit_status==0)) return exit_status;
-	throw System::TerminationIssue(ERS_HERE, errno, exit_status);
+	throw OksSystem::TerminationIssue(ERS_HERE, errno, exit_status);
     } // exit status
-    if (WIFSIGNALED(status)) throw System::SignalIssue(ERS_HERE,errno,WTERMSIG(status));
-    if (WIFSTOPPED(status)) throw System::SignalIssue(ERS_HERE,errno,WSTOPSIG(status));
+    if (WIFSIGNALED(status)) throw OksSystem::SignalIssue(ERS_HERE,errno,WTERMSIG(status));
+    if (WIFSTOPPED(status)) throw OksSystem::SignalIssue(ERS_HERE,errno,WSTOPSIG(status));
     return WEXITSTATUS(status);
 } // join
 
@@ -166,11 +166,11 @@ int System::Process::join(bool throw_non_zero) const {
   * \param signal_number number of the signal 
   */
 
-void System::Process::signal(int signal_number) const {
+void OksSystem::Process::signal(int signal_number) const {
     const int status = ::kill(m_process_id,signal_number);
     if (status < 0) {
       std::string message = "on process " + this->to_string();
-      throw System::SystemCallIssue(ERS_HERE, errno, "kill", message.c_str());
+      throw OksSystem::OksSystemCallIssue(ERS_HERE, errno, "kill", message.c_str());
     }
 } // signal
 
@@ -180,7 +180,7 @@ void System::Process::signal(int signal_number) const {
   *       in case of failure, we know process does not exist 
   */
 
-bool System::Process::exists() const {
+bool OksSystem::Process::exists() const {
     const int status = ::kill(m_process_id,0);
     return (status>=0);
 } // exists
@@ -190,7 +190,7 @@ bool System::Process::exists() const {
   * \return true if both proceses are equal (same pid).
   */
 
-bool System::Process::equals(const Process &other) const throw() {
+bool OksSystem::Process::equals(const Process &other) const throw() {
     return m_process_id == other.m_process_id;
 } // equals
 
@@ -199,7 +199,7 @@ bool System::Process::equals(const Process &other) const throw() {
   * \li sending the TERM signal
   */
 
-void System::Process::terminate() const {
+void OksSystem::Process::terminate() const {
   /*
     struct timespec wait_time;
     struct timespec remain_time;
@@ -229,7 +229,7 @@ void System::Process::terminate() const {
   * \return textual description
   */
 
-std::string System::Process::to_string() const throw() {
+std::string OksSystem::Process::to_string() const throw() {
     std::ostringstream stream;
     if (! m_process_name.empty()) {
 	stream << m_process_name << ' ';
@@ -241,7 +241,7 @@ std::string System::Process::to_string() const throw() {
 /** \return the process id for the process 
   */
 
-pid_t System::Process::process_id() const throw() { return m_process_id;} 
+pid_t OksSystem::Process::process_id() const throw() { return m_process_id;} 
 
 /** Streaming operator
   * \param out destination stream
@@ -249,7 +249,7 @@ pid_t System::Process::process_id() const throw() { return m_process_id;}
   * \see Process::to_string()
   */
 
-std::ostream& operator<<(std::ostream& out, const System::Process &proc) {
+std::ostream& operator<<(std::ostream& out, const OksSystem::Process &proc) {
     out << proc.to_string();
     return out;
 } // operator<<
@@ -258,10 +258,10 @@ std::ostream& operator<<(std::ostream& out, const System::Process &proc) {
   * \param a first process to compare
   * \param b second process to compare 
   * \return true if they are equal 
-  * \see System::Process::equals
+  * \see OksSystem::Process::equals
   */
 
-bool operator ==(const System::Process &a, const System::Process &b)  throw() {
+bool operator ==(const OksSystem::Process &a, const OksSystem::Process &b)  throw() {
     return a.equals(b);
 } // operator ==
 
@@ -269,10 +269,10 @@ bool operator ==(const System::Process &a, const System::Process &b)  throw() {
   * \param a first process to compare
   * \param b second process to compare 
   * \return false if they are equal 
-  * \see System::Process::equals
+  * \see OksSystem::Process::equals
   */
 
-bool operator !=(const System::Process &a, const System::Process &b)  throw() {
+bool operator !=(const OksSystem::Process &a, const OksSystem::Process &b)  throw() {
     return ! a.equals(b); 
 } // operator !=
 

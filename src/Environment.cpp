@@ -9,10 +9,10 @@
 
 #include <stdlib.h>
 
-#include "system/Environment.hpp"
-#include "system/exceptions.hpp"
+#include "okssystem/Environment.hpp"
+#include "okssystem/exceptions.hpp"
 
-using namespace System;
+using namespace OksSystem;
 
 /** Sets an environnement variable 
   * \param key the name of the variable
@@ -20,13 +20,13 @@ using namespace System;
   * \exception PosixIssue unable to set environnement variable 
   */
 
-void System::Environment::set(const std::string &key, const std::string &value) {
+void OksSystem::Environment::set(const std::string &key, const std::string &value) {
     const char* c_key = key.c_str();
     const char* c_value = value.c_str();
     const int status = ::setenv(c_key,c_value,1);
     if (status<0) {
       std::string message = "while setting " + key + " to " + value;
-      throw SystemCallIssue( ERS_HERE, errno, "setenv", message.c_str());
+      throw OksSystemCallIssue( ERS_HERE, errno, "setenv", message.c_str());
     }
 } // set
 
@@ -35,7 +35,7 @@ void System::Environment::set(const std::string &key, const std::string &value) 
  * \exception PosixIssue unable to set environnement variable 
  */
 
-void System::Environment::set(const std::map<std::string,std::string> &values) {
+void OksSystem::Environment::set(const std::map<std::string,std::string> &values) {
     for(std::map<std::string,std::string>::const_iterator pos = values.begin();pos!=values.end();++pos) {
 	set(pos->first,pos->second); 
     } // for
@@ -46,7 +46,7 @@ void System::Environment::set(const std::map<std::string,std::string> &values) {
   * \return the value of the variable, of the string \c NO_VALUE if the variable is unknown. 
   */
 
-std::string System::Environment::get(const std::string &key) {
+std::string OksSystem::Environment::get(const std::string &key) {
     const char* c_value = ::getenv(key.c_str());
     if (c_value==0) return std::string();
     return std::string(c_value);

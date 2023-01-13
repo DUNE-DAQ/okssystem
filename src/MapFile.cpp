@@ -13,9 +13,9 @@
 #include <unistd.h>
 
 
-#include "system/Descriptor.hpp"
-#include "system/MapFile.hpp"
-#include "system/exceptions.hpp"
+#include "okssystem/Descriptor.hpp"
+#include "okssystem/MapFile.hpp"
+#include "okssystem/exceptions.hpp"
 
 #include "ers/Assertion.hpp"
 
@@ -28,7 +28,7 @@
   * \param permissions the permissions associated with the file 
   */
 
-System::MapFile::MapFile(const std::string &name, size_t s, size_t o, bool read_mode, bool write_mode, mode_t perm) : File(name) {
+OksSystem::MapFile::MapFile(const std::string &name, size_t s, size_t o, bool read_mode, bool write_mode, mode_t perm) : File(name) {
     ERS_PRECONDITION((read_mode || write_mode)); 
     const int page_size = getpagesize();
     ERS_PRECONDITION((s % page_size)==0);
@@ -47,27 +47,27 @@ System::MapFile::MapFile(const std::string &name, size_t s, size_t o, bool read_
 /** Destructor - the file should be unmapped before destruction. 
   */
 
-System::MapFile::~MapFile() {
+OksSystem::MapFile::~MapFile() {
     if (m_map_descriptor!=0) {
 	close_fd(); 
     } // file descriptor open 
 } // ~MapFile
 
 /** Opens the file descriptor associated with the memory map. 
-  * \exception OpenFail if the \c open system call fails
+  * \exception OpenFail if the \c open okssystem call fails
   */
 
-void System::MapFile::open_fd() {
-    const int flags = System::Descriptor::flags(m_map_read,m_map_write);
-    m_map_descriptor = new System::Descriptor(this, flags,m_map_permission);
+void OksSystem::MapFile::open_fd() {
+    const int flags = OksSystem::Descriptor::flags(m_map_read,m_map_write);
+    m_map_descriptor = new OksSystem::Descriptor(this, flags,m_map_permission);
 } // open_fd 
 
 
 /** Closes the file descriptor associated with the memory map.
-  * \exception CloseFail if the \c close system call fails 
+  * \exception CloseFail if the \c close okssystem call fails 
   */
 
-void System::MapFile::close_fd() {
+void OksSystem::MapFile::close_fd() {
     m_map_descriptor->close(); 
     delete(m_map_descriptor);
     m_map_descriptor = 0;
@@ -78,7 +78,7 @@ void System::MapFile::close_fd() {
   * \exception Precondition if the file descriptor is not valid. 
   */
 
-void System::MapFile::map_mem() {
+void OksSystem::MapFile::map_mem() {
     ERS_PRECONDITION(m_map_descriptor); 
     int prot = 0;
     int flags = MAP_FILE | MAP_SHARED;
@@ -92,7 +92,7 @@ void System::MapFile::map_mem() {
     if (m_map_address==MAP_FAILED || m_map_address==0) {
         m_is_mapped = false;
 	std::string message = "on file " + this->full_name();
-	throw System::SystemCallIssue( ERS_HERE, errno, "mmap", message.c_str() ); 
+	throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "mmap", message.c_str() ); 
     } /* map_failed */ else {
         m_is_mapped = true;
     }
@@ -102,13 +102,13 @@ void System::MapFile::map_mem() {
   * \exception MUnmapFail if the \c munmap operation fails. 
   */
 
-void System::MapFile::unmap_mem(){
+void OksSystem::MapFile::unmap_mem(){
     ERS_PRECONDITION(m_map_address!=0);
     const int status = munmap(m_map_address,m_map_size);
     if (status<0) {
       m_is_mapped = true;
       std::string message = "on file " + this->full_name();
-      throw System::SystemCallIssue( ERS_HERE, errno, "munmap", message.c_str() );
+      throw OksSystem::OksSystemCallIssue( ERS_HERE, errno, "munmap", message.c_str() );
     } else {
       m_is_mapped = false;
     }
@@ -117,10 +117,10 @@ void System::MapFile::unmap_mem(){
 /** Creates a zero filled file with correct length 
   */
 
-void System::MapFile::zero() const {
+void OksSystem::MapFile::zero() const {
     ERS_ASSERT(m_map_write==true); 
-    const int flags = System::Descriptor::flags(false,true); 
-    System::Descriptor fd(this, flags,m_map_permission);
+    const int flags = OksSystem::Descriptor::flags(false,true); 
+    OksSystem::Descriptor fd(this, flags,m_map_permission);
     const int page_size = ::getpagesize();
     const int page_num = (m_map_size+m_map_offset) / page_size;
     void *buffer= calloc(1,page_size);
@@ -138,7 +138,7 @@ void System::MapFile::zero() const {
   * \exception MMapFail error while mapping the file
   */
 
-void System::MapFile::map() {
+void OksSystem::MapFile::map() {
     open_fd();
     map_mem(); 
 } // map 
@@ -149,12 +149,12 @@ void System::MapFile::map() {
   * \exception MUnmapFail error while unmapping the file. 
   */
 
-void System::MapFile::unmap() {
+void OksSystem::MapFile::unmap() {
     unmap_mem();
     close_fd(); 
 } // unmap
 
-bool System::MapFile::is_loaded() const throw() {
+bool OksSystem::MapFile::is_loaded() const throw() {
     return (m_map_address!=0);
 } // is_loaded
 
@@ -164,7 +164,7 @@ bool System::MapFile::is_loaded() const throw() {
   * \return point to the start address of the mapped file in memory. 
   */
 
-void *System::MapFile::address() const throw() { 
+void *OksSystem::MapFile::address() const throw() { 
     return m_map_address;
 } // address
 
@@ -172,16 +172,16 @@ void *System::MapFile::address() const throw() {
   * \return the size of the memory region
   */
 
-size_t System::MapFile::memory_size()  const throw() { 
+size_t OksSystem::MapFile::memory_size()  const throw() { 
     return m_map_size;
 } // memory_size
 
 /** Returns if the file is mapped or not in memory */
 
-bool System::MapFile::is_mapped() const {
+bool OksSystem::MapFile::is_mapped() const {
   return m_is_mapped;
 }
 
-System::Descriptor* System::MapFile::fd() const throw() {
+OksSystem::Descriptor* OksSystem::MapFile::fd() const throw() {
   return m_map_descriptor;
 }

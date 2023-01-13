@@ -1,19 +1,19 @@
 /*
  *  StringMemoryArea.h
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 17.02.05.
  *  Copyright 2005 CERN. All rights reserved.
  *
  */
 
-#ifndef SYSTEM_STRING_MEMORY_AREA
-#define SYSTEM_STRING_MEMORY_AREA
+#ifndef OKSSYSTEM_STRING_MEMORY_AREA
+#define OKSSYSTEM_STRING_MEMORY_AREA
 
 #include <map>
 #include <vector>
 
-namespace System {
+namespace OksSystem {
     
     /** This class offers facilities to store variable length strings into a memory area. 
       * The class can also store vector of strings and arrays. 
@@ -54,6 +54,6 @@ public:
 	str_map get_map(offset_t offset) const ; 
     } ; // StringMemoryArea
     
-} // system
+} // okssystem
 
 #endif

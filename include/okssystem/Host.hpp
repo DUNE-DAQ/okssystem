@@ -1,14 +1,14 @@
 /*
  *  Host.h
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 03.02.05.
  *  Copyright 2005 CERN. All rights reserved.
  *
  */
 
-#ifndef SYSTEM_HOST
-#define SYSTEM_HOST
+#ifndef OKSSYSTEM_HOST
+#define OKSSYSTEM_HOST
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-namespace System {
+namespace OksSystem {
     
     /** This class represents an network host. 
       * It offers facilities to translate name to addresses and vice versa.
@@ -88,9 +88,9 @@ public:
     bool operator !=(const LocalHost &a, const LocalHost &b)  throw(); 
 
     
-} // System 
+} // OksSystem 
 
 
-std::ostream& operator<<(std::ostream& stream, const System::Host& host) ; 
+std::ostream& operator<<(std::ostream& stream, const OksSystem::Host& host) ; 
 
 #endif

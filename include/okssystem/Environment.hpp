@@ -1,19 +1,19 @@
 /*
  *  Environment.h
- *  System
+ *  OksSystem
  *
  *  Created by Matthias Wiesmann on 11.01.05.
  *  Copyright 2005 CERN. All rights reserved.
  *
  */
 
-#ifndef SYSTEM_ENVIRONMENT
-#define SYSTEM_ENVIRONMENT
+#ifndef OKSSYSTEM_ENVIRONMENT
+#define OKSSYSTEM_ENVIRONMENT
 
 #include <string>
 #include <map>
 
-namespace System {
+namespace OksSystem {
     
     /** This class contains utility methods to handle environnement variables
       * \author Matthias Wiesmann
@@ -26,7 +26,7 @@ namespace System {
 	static void set(const std::string &key, const std::string & value);	/**< \brief sets an environnement variable */
 	static void set(const std::map<std::string,std::string> & values);	/**< \brief sets a collection of variables */
     } ; // Environment
-} // System
+} // OksSystem
 
 #endif
 
