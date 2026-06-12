@@ -10,7 +10,7 @@ renamed from "system" to "okssystem".
 Consistent with the ATLAS "system" repository's Apache 2.0 license:
 
 * A copy of the original ATLAS system NOTICE is reproduced below and in
-  licenses_and_notices/NOTICE.
+  licenses_and_notices/NOTICE.system_ATLAS.
 
 * A copy of the ATLAS system Apache 2.0 license is included in
   licenses_and_notices/LICENSE.Apache2.0; it is to be considered only
