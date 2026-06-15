@@ -1,9 +1,7 @@
-/*
- * DUNE DAQ modification notice:
- * This file has been modified from the original ATLAS system source for the DUNE DAQ project.
- * Fork baseline commit: system-00-00-20 (2020-09-25).
- * Renamed since fork: yes (from system/Process.h to include/okssystem/Process.hpp).
- */
+// DUNE DAQ modification notice:
+// This file has been modified from the original ATLAS system source for the DUNE DAQ project.
+// Fork baseline commit: system-00-00-20 (2020-09-25).
+// Renamed since fork: yes (from system/Process.h to include/okssystem/Process.hpp).
 
 /*
  *  Process.h
