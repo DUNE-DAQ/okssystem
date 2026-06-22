@@ -1,3 +1,8 @@
+# DUNE DAQ modification notice:
+# This file has been modified from the original ATLAS system source for the DUNE DAQ project.
+# Fork baseline commit: system-00-00-20 (2020-09-25).
+# Renamed since fork: no.
+
 cmake_minimum_required(VERSION 3.12)
 project(okssystem VERSION 1.0.0)
 
