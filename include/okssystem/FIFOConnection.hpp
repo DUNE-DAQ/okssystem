@@ -10,46 +10,47 @@
 #ifndef OKSSYSTEM_FIFO_CONNECTION
 #define OKSSYSTEM_FIFO_CONNECTION
 
-#include "okssystem/File.hpp"
 #include "okssystem/Descriptor.hpp"
+#include "okssystem/File.hpp"
 
 namespace OksSystem {
-    
-    /** This class offers some basic tool to communicate simple messages using a filesystem based FIFO
-      * (named pipe). 
-      * \author Matthias Wiesmann
-      * \version 1.0
-      */
-    
-    class FIFOConnection : public File {
-	
-    public:
-	static const unsigned int MAX_MESSAGE_LEN ;
- 
-	FIFOConnection(const std::string &name) ; 
-	FIFOConnection(const File &file) ; 
 
-	~FIFOConnection() ;
+/** This class offers some basic tool to communicate simple messages using a filesystem based FIFO
+ * (named pipe).
+ * \author Matthias Wiesmann
+ * \version 1.0
+ */
 
-	void make(mode_t perm=0622) const ; 
+class FIFOConnection : public File
+{
 
-	std::string read_message() const ; 
-	void send_message(const std::string &message) const ; 
+public:
+  static const unsigned int MAX_MESSAGE_LEN;
 
-	OksSystem::Descriptor* open_r(bool block = true);
-	OksSystem::Descriptor* open_w(bool block = true);
-	OksSystem::Descriptor* open_rw(bool block = true);
-	void send(const std::string &message) const;
-	std::string read() const;
-	int fd() const;
-	void close();
+  FIFOConnection(const std::string& name);
+  FIFOConnection(const File& file);
 
-    private:
-	OksSystem::Descriptor* m_fifo_fd;
-	bool m_is_blocking;
-	
-    } ; // FIFOConnection
-    
+  ~FIFOConnection();
+
+  void make(mode_t perm = 0622) const;
+
+  std::string read_message() const;
+  void send_message(const std::string& message) const;
+
+  OksSystem::Descriptor* open_r(bool block = true);
+  OksSystem::Descriptor* open_w(bool block = true);
+  OksSystem::Descriptor* open_rw(bool block = true);
+  void send(const std::string& message) const;
+  std::string read() const;
+  int fd() const;
+  void close();
+
+private:
+  OksSystem::Descriptor* m_fifo_fd;
+  bool m_is_blocking;
+
+}; // FIFOConnection
+
 } // OksSystem
 
 #endif
