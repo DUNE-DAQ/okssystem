@@ -4,7 +4,7 @@
 # Renamed since fork: no.
 
 cmake_minimum_required(VERSION 3.12)
-project(okssystem VERSION 1.0.0)
+project(okssystem VERSION 1.0.1)
 
 find_package(daq-cmake REQUIRED)
 
